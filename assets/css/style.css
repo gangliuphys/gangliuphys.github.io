@@ -1159,6 +1159,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   padding: 0;
 }
 
+/* 每条项目占一行：标题在左，元信息（类别·代码·时间·角色）在右 */
 .grant {
   position: relative;
   padding-left: 2.1rem;
@@ -1169,7 +1170,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   content: "[" counter(grant) "]";
   position: absolute;
   left: 0;
-  top: 0;
+  top: 0.35rem;
   font-size: var(--fs-sm);
   font-weight: 650;
   color: var(--text-muted);
@@ -1178,9 +1179,14 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 
 /* 序号占位后，分隔线画在序号之后的正文区内 */
 .grant {
-  margin-bottom: var(--sp-4);
-  padding-bottom: var(--sp-4);
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.55rem;
   border-bottom: 1px solid var(--border);
+  /* 标题与元信息并排成一行 */
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem 1rem;
+  flex-wrap: wrap;
 }
 
 .grant:last-child {
@@ -1193,7 +1199,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   font-size: var(--fs-md);
   font-weight: 600;
   line-height: 1.5;
-  margin-bottom: 0.4rem;
+  /* 占据剩余空间，把元信息推到最右 */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .grant__meta {
@@ -1203,6 +1211,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   gap: 0.4rem 1rem;
   font-size: var(--fs-sm);
   color: var(--text-muted);
+  /* 靠右排列，不再换行 */
+  flex: 0 1 auto;
+  margin-left: auto;
 }
 
 .grant__no {
@@ -1336,6 +1347,19 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   font-size: var(--fs-sm);
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+.shot__date {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.06rem 0.42rem;
+  border-radius: var(--radius-sm);
+  background: var(--tag-bg);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.08em;
 }
 
 /* --------------------------------------------------------------------------
