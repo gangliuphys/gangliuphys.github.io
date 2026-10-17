@@ -1168,7 +1168,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 /* 每条项目占一行：标题在左，元信息（类别·代码·时间·角色）在右 */
 .grant {
   position: relative;
-  padding-left: 2.1rem;
+  padding-left: 2.6rem;
   counter-increment: grant;
 }
 
@@ -1176,9 +1176,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   content: "[" counter(grant) "]";
   position: absolute;
   left: 0;
-  top: 0.35rem;
-  font-size: var(--fs-sm);
-  font-weight: 650;
+  top: 0.2rem;
+  font-size: var(--fs-md);        /* 与项目名称同字号 */
+  font-weight: 640;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -1312,6 +1312,18 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 
 .news__text em a {
   font-weight: 550;
+}
+
+/* 动态里的项目名称：正体加粗，用链接同款绿色 */
+.news__strong {
+  font-weight: 640;
+  font-style: normal;
+  color: var(--brand-600);
+}
+
+/* 深色背景下加深绿色，避免对比度不足 */
+[data-theme="dark"] .news__strong {
+  color: var(--brand-300);
 }
 
 .news__more {
