@@ -1,10 +1,31 @@
 # 手动部署命令（复制粘贴到 PowerShell 或 Git Bash 均可）
 
+## ✅ 当前部署状态（2026-10-18 00:45）
+
+站点已推送至仓库 **`gangliuphys/gangliuphys`**（31 个文件，main 分支）。
+
+**你还需做两步即可上线：**
+
+1. 打开 <https://github.com/gangliuphys/gangliuphys/settings/pages>
+2. Build and deployment 下拉框选 **`main` / `(root)`** → 点 Save
+
+等待 1–2 分钟后访问：
+
+```
+https://gangliuphys.github.io/gangliuphys/
+```
+
+> 注：因 GitHub 连接器的 Token 没有「创建仓库」权限，无法自动建 `gangliuphys.github.io` 仓库，
+> 故使用了注册时自动生成的默认仓库 `gangliuphys`。
+> 若你想要更简洁的地址 `https://gangliuphys.github.io/`，见文末「如何获得根域名地址」。
+
+---
+
 ## 前置：确认你的 GitHub 用户名
 
 打开 <https://github.com/>，登录后看右上角头像旁边的名字。
 
-当前站点配置的用户名已更新为 **`gangliuphys`**，网站地址为 `https://gangliuphys.github.io/`。
+当前站点配置的用户名已更新为 **`gangliuphys`**。
 
 ---
 
@@ -125,3 +146,57 @@ Token 错了或过期了，重新生成。注意不能复制到多余空格。
 
 **中文字体异常 / 样式错乱**
 刷新时用 `Ctrl + F5` 强制清缓存。Pages 有 CDN 缓存，通常一两分钟会自己更新。
+
+---
+
+## 如何获得根域名地址 `https://gangliuphys.github.io/`
+
+GitHub Pages 的根域名**必须**使用名为 `用户名.github.io` 的仓库。当前仓库名是 `gangliuphys`，
+因此只能得到带子路径的地址。
+
+### 方法 A：新建仓库并迁移（推荐）
+
+1. 打开 <https://github.com/new>
+2. Repository name 填 **`gangliuphys.github.io`**
+3. 可见性选 **Public**（私有仓库无法开启 Pages）
+4. **不要**勾选 Add a README file
+5. 点 Create repository
+6. 在本地项目目录执行：
+
+```bash
+cd "E:/OneDrive - stu.wzu.edu.cn/个人主页"
+git remote add pages https://github.com/gangliuphys/gangliuphys.github.io.git
+git push pages main
+git remote remove pages
+```
+
+7. 打开 <https://github.com/gangliuphys/gangliuphys.github.io/settings/pages>
+8. Source 选 `main` / `(root)` → Save
+
+之后访问 `https://gangliuphys.github.io/`（不带子路径）。
+
+### 方法 B：在网页端重命名现有仓库
+
+1. 打开 <https://github.com/gangliuphys/gangliuphys/settings>
+2. 找到最上方 Repository name，点铅笔图标修改为 `gangliuphys.github.io`
+3. 本地同步新地址：
+
+```bash
+cd "E:/OneDrive - stu.wzu.edu.cn/个人主页"
+git remote set-url origin https://github.com/gangliuphys/gangliuphys.github.io.git
+```
+
+---
+
+## 后续更新内容
+
+无论最终用哪个仓库，更新方式都一样：
+
+```bash
+cd "E:/OneDrive - stu.wzu.edu.cn/个人主页"
+git add -A
+git commit -m "update: 描述本次改动"
+git push
+```
+
+约 1 分钟后线上自动更新。
