@@ -1,0 +1,23 @@
+# 开发辅助脚本（不参与站点部署）
+_validate.py
+_check_responsive.py
+_build_placeholders.py
+_build_gallery.py
+
+# 图片源文件夹（已压缩处理后放入 assets/img/papers/）
+selected papers/
+
+# 本地工具与项目记忆
+.workbuddy/
+
+# 临时文件
+_*.html
+_*.png
+_*.bak
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  个人学术主页 · 快速修改指南
+  ----------------------------------------------------------------------------
+  1. 全站文案都带 data-zh / data-en 两个属性，JS 依据语言状态自动切换。
+     想改中文 → 改 data-zh；想改英文 → 改 data-en。
+  2. 论文 / 项目 / 新闻条目：在对应 section 内复制一个 <article> 整块即可。
+  3. 替换照片：把 assets/img/profile.jpg 换成你自己的照片（建议 3:4 竖版）。
+  4. 顶栏导航：增删 <a class="nav__link">，同步检查 <section id="...">。
+  ============================================================================
+-->
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="刘刚，浙江大学物理学院博士后。研究方向：量子光学、量子计量、量子相变与磁振子混合量子系统。">
+<meta name="author" content="刘刚 Gang Liu">
+<meta name="keywords" content="刘刚, Gang Liu, 浙江大学, 量子光学, 量子计量, 量子相变, 磁振子, 混合量子系统, quantum optics, quantum metrology, quantum phase transition, magnonics">
+
+<!-- Open Graph / 社交分享卡片 -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="刘刚 Gang Liu · 个人学术主页">
+<meta property="og:description" content="浙江大学物理学院博士后。研究方向：量子光学、量子计量、量子相变与磁振子混合量子系统。">
+<meta property="og:image" content="assets/img/profile.png">
+<meta property="og:url" content="https://iuang0305.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+
+<title>刘刚 Gang Liu · 个人学术主页</title>
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+
+<script>
+  // 首屏前应用主题，避免深色模式下的白屏闪烁
+  (function () {
+    try {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      var lang = localStorage.getItem('lang') || 'zh';
+      document.documentElement.setAttribute('data-lang', lang);
+    } catch (e) { /* 隐私模式下 localStorage 不可用，走默认 */ }
+  })();
+</script>
+</head>
+
+<body>
+<a class="skip-link" href="#main" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
+
+<!-- ======================= 顶栏 ======================= -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top" data-zh="刘刚 Gang Liu" data-en="Gang Liu">刘刚 Gang Liu</a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Main navigation">
+      <a class="nav__link" href="#top"          data-zh="首页"       data-en="Home">首页</a>
+      <a class="nav__link" href="#news"         data-zh="动态"       data-en="News">动态</a>
+      <a class="nav__link" href="#publications" data-zh="论文"       data-en="Selected Papers">论文</a>
+      <a class="nav__link" href="#projects"     data-zh="项目"       data-en="Projects">项目</a>
+      <a class="nav__link" href="#education"    data-zh="教育"       data-en="Education">教育</a>
+      <a class="nav__link" href="#experience"   data-zh="工作"       data-en="Experience">工作</a>
+      <a class="nav__link" href="#gallery"      data-zh="相册"       data-en="Gallery">相册</a>
+    </nav>
+
+    <div class="nav__tools">
+      <button class="nav__lang" id="langToggle" type="button"
+              aria-label="Switch language" title="Switch language">
+        <span id="langLabel">EN</span>
+      </button>
+
+      <button class="nav__icon-btn" id="themeToggle" type="button"
+              aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" hidden>
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+        <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+      </button>
+
+      <button class="nav__icon-btn" id="searchOpen" type="button"
+              aria-label="Search" title="Search (Ctrl+K)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+      </button>
+
+      <button class="nav__icon-btn nav__burger" id="burger" type="button"
+              aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round">
+          <path d="M3 6h18M3 12h18M3 18h18"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <span id="top"></span>
+
+  <!-- ======================= Hero：个人信息 + 照片 ======================= -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <img class="hero__photo" src="assets/img/profile.png"
+             alt="刘刚照片" width="264" height="326"
+             data-zh-alt="刘刚照片" data-en-alt="Photo of Gang Liu">
+
+        <div class="hero__body">
+          <h1 class="hero__name">
+            <span class="lang-only" lang="zh">刘刚</span>
+            <span class="lang-only" lang="en">Gang Liu</span>
+          </h1>
+
+          <p class="hero__role"
+             data-zh="浙江大学物理学院 · 博士后"
+             data-en="Postdoctoral Fellow, Zhejiang University">浙江大学物理学院 · 博士后</p>
+
+          <!-- 紧凑信息行：单位 / 办公室 / 邮箱 / 语言 -->
+          <ul class="hero__meta">
+            <li>
+              <svg class="hero__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"></path>
+              </svg>
+              <a href="https://www.zju.edu.cn/" target="_blank" rel="noopener noreferrer"
+                 data-zh-text="浙江大学 物理学院"
+                 data-en-text="Zhejiang University, School of Physics">浙江大学 物理学院</a>
+            </li>
+            <li>
+              <svg class="hero__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span data-zh="紫金港校区"
+                    data-en="Zijingang Campus">紫金港校区</span>
+            </li>
+            <li>
+              <svg class="hero__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m2 7 10 6 10-6"></path>
+              </svg>
+              <a href="mailto:gangliuphys@gmail.com">gangliuphys@gmail.com</a>
+            </li>
+            <li>
+              <svg class="hero__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"></path>
+              </svg>
+              <span data-zh="Chinese / English"
+                    data-en="Chinese / English">Chinese / English</span>
+            </li>
+          </ul>
+
+          <p class="hero__tagline"
+             data-zh="我的研究围绕光–物质相互作用与混合量子系统，聚焦于量子光学与量子信息物理的交叉前沿：通过腔场、自旋集体效应与磁振子平台制备非经典态，探究量子相变的调控机制，并将这些量子资源用于量子精密测量与量子纠错。"
+             data-en="My research lies at the intersection of quantum optics and quantum information physics. Working within light–matter interactions and hybrid quantum systems, I prepare nonclassical states using cavity fields, collective spin effects and magnonic platforms, explore the control of quantum phase transitions, and apply these quantum resources to quantum precision measurement and quantum error correction.">
+            我的研究围绕光–物质相互作用与混合量子系统，聚焦于量子光学与量子信息物理的交叉前沿：通过腔场、自旋集体效应与磁振子平台制备非经典态，探究量子相变的调控机制，并将这些量子资源用于量子精密测量与量子纠错。
+          </p>
+
+          <ul class="hero__keywords">
+            <li class="tag"><span data-zh-text="量子光学" data-en-text="Quantum Optics">量子光学</span></li>
+            <li class="tag"><span data-zh-text="量子计量" data-en-text="Quantum Metrology">量子计量</span></li>
+            <li class="tag"><span data-zh-text="量子相变" data-en-text="Quantum Phase Transition">量子相变</span></li>
+            <li class="tag"><span data-zh-text="腔 QED" data-en-text="Cavity QED">腔 QED</span></li>
+            <li class="tag"><span data-zh-text="磁振子" data-en-text="Magnonics">磁振子</span></li>
+            <li class="tag"><span data-zh-text="混合量子系统" data-en-text="Hybrid Quantum Systems">混合量子系统</span></li>
+          </ul>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="https://scholar.google.com/citations?user=dG1VrdMAAAAJ&amp;hl=en"
+               target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5L12 2z"/></svg>
+              Google Scholar
+            </a>
+            <a class="btn" href="https://www.researchgate.net/profile/Gang-Liu-88?ev=hdr_xprf"
+               target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 0a6 6 0 1 0 0 12A6 6 0 0 0 6 0zm12.2 9.2v1.5h-4.3l-.6 3.6 2.2-1v1.5l-4 1.8-3.9-1.8v-1.5l2.2 1-.6-3.6H6.8V9.2l3-.3 1.3 4.1.7-3.5h4.1l-1.1 3.5 4.4.3z"/></svg>
+              ResearchGate
+            </a>
+            <a class="btn" href="https://github.com/iuang0305" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.3 1.19-3.1-.12-.3-.52-1.48.11-3.1 0 0 .97-.31 3.18 1.19a11 11 0 0 1 5.8 0c2.2-1.5 3.17-1.19 3.17-1.19.63 1.62.23 2.8.11 3.1.74.8 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+              GitHub
+            </a>
+            <a class="btn" href="https://orcid.org/0000-0001-5182-6222" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm0 2.2c2.2 0 4.2.8 5.8 2.2l-1.4 1.4A7.7 7.7 0 1 0 12 19.8c1.9 0 3.6-.7 4.9-1.8l1.4 1.4a9.9 9.9 0 1 1 0-14.2A9.9 9.9 0 0 1 12 2.2z"/></svg>
+              ORCID
+            </a>
+            <a class="btn" href="assets/liu_gang_cv_cn.pdf"
+               data-zh-href="assets/liu_gang_cv_cn.pdf"
+               data-en-href="assets/liu_gang_cv_en.pdf">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path>
+              </svg>
+              <!-- 文字用 CSS 控制，JS 未执行时也能正常显示 -->
+              <span class="btn__i18n" data-zh-text="下载简历" data-en-text="Download CV">下载简历</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 新闻动态 ======================= -->
+  <section class="section" id="news">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="新闻动态" data-en="News">新闻动态</h2>
+        <a class="section__more" href="#news" data-zh="全部动态 →" data-en="All news →">全部动态 →</a>
+      </div>
+
+                        <div class="news__list">
+        <article class="news__item">
+          <p class="news__date">2026.10</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">论文 <em><a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc">Macroscopic entanglement between two magnon modes via two-tone driving of a superconducting qubit</a></em> 正式发表于 <a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc">Physical Review A 114, 043707 (2026)</a>。</span>
+            <span class="lang-only" lang="en">Paper <em><a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc">Macroscopic entanglement between two magnon modes via two-tone driving of a superconducting qubit</a></em> formally published in <a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc">Physical Review A 114, 043707 (2026)</a>.</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.08</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">获批国家自然科学基金青年（C）项目「磁振子-超导量子比特系统中超辐射相变的实现及应用」（12605048）。</span>
+            <span class="lang-only" lang="en">Awarded an NSFC Youth Program (Category C) grant &ldquo;Realization and Applications of Superradiant Phase Transition in Magnon-Superconducting Qubit Systems&rdquo; (12605048).</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.07</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">受邀专题综述 <em><a href="https://arxiv.org/abs/2607.27771">Quantum Magnonics: Quantum States Generation and Applications</a></em> 预印本发布于 <a href="https://arxiv.org/abs/2607.27771">arXiv:2607.27771</a>（通讯作者）。</span>
+            <span class="lang-only" lang="en">Invited topical review <em><a href="https://arxiv.org/abs/2607.27771">Quantum Magnonics: Quantum States Generation and Applications</a></em> posted on <a href="https://arxiv.org/abs/2607.27771">arXiv:2607.27771</a> (corresponding author).</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.07</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">受邀到 <a href="https://www.lzu.edu.cn/" target="_blank" rel="noopener noreferrer">兰州大学物理科学与技术学院</a> 作学术报告，题为&ldquo;<a href="https://www.lzu.edu.cn/">基于磁振子的混合量子系统</a>&rdquo;。</span>
+            <span class="lang-only" lang="en">Invited to give an academic talk at <a href="https://www.lzu.edu.cn/" target="_blank" rel="noopener noreferrer">Lanzhou University, School of Physics and Technology</a>, titled &ldquo;<a href="https://www.lzu.edu.cn/">Magnon-Based Hybrid Quantum Systems</a>&rdquo;.</span>
+          </p>
+        </article>
+
+        <article class="news__item">
+          <p class="news__date">2026.06</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">论文 <em><a href="https://arxiv.org/abs/2606.25511">Preparing two-mode magnonic Schrödinger cat states in a cavity-magnon-qubit system</a></em> 预印本发布于 <a href="https://arxiv.org/abs/2606.25511">arXiv:2606.25511</a>。</span>
+            <span class="lang-only" lang="en">Preprint <em><a href="https://arxiv.org/abs/2606.25511">Preparing two-mode magnonic Schrödinger cat states in a cavity-magnon-qubit system</a></em> posted on <a href="https://arxiv.org/abs/2606.25511">arXiv:2606.25511</a>.</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.04</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">论文 <em><a href="https://journals.aps.org/pra/abstract/10.1103/jk8g-t1d8">Engineering near-unitary one-axis-twisting evolution via a driven Tavis-Cummings model</a></em> 发表于 <a href="https://journals.aps.org/pra/abstract/10.1103/jk8g-t1d8">Physical Review A 113, 043710 (2026)</a>。</span>
+            <span class="lang-only" lang="en">Paper <em><a href="https://journals.aps.org/pra/abstract/10.1103/jk8g-t1d8">Engineering near-unitary one-axis-twisting evolution via a driven Tavis-Cummings model</a></em> published in <a href="https://journals.aps.org/pra/abstract/10.1103/jk8g-t1d8">Physical Review A 113, 043710 (2026)</a>.</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.04</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">论文 <em><a href="https://arxiv.org/abs/2604.02924">Generation of magnonic squeezed state and its superposition in a hybrid qubit-magnon system</a></em> 预印本发布于 <a href="https://arxiv.org/abs/2604.02924">arXiv:2604.02924</a>。</span>
+            <span class="lang-only" lang="en">Preprint <em><a href="https://arxiv.org/abs/2604.02924">Generation of magnonic squeezed state and its superposition in a hybrid qubit-magnon system</a></em> posted on <a href="https://arxiv.org/abs/2604.02924">arXiv:2604.02924</a>.</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.04</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">论文 <em><a href="https://arxiv.org/abs/2604.27565">Magnonic Gottesman-Kitaev-Preskill states</a></em> 预印本发布于 <a href="https://arxiv.org/abs/2604.27565">arXiv:2604.27565</a>。</span>
+            <span class="lang-only" lang="en">Preprint <em><a href="https://arxiv.org/abs/2604.27565">Magnonic Gottesman-Kitaev-Preskill states</a></em> posted on <a href="https://arxiv.org/abs/2604.27565">arXiv:2604.27565</a>.</span>
+          </p>
+        </article>
+        <article class="news__item">
+          <p class="news__date">2026.03</p>
+          <p class="news__text">
+            <span class="lang-only" lang="zh">论文 <em><a href="https://doi.org/10.1103/d2st-rr91">Magnon squeezing near a quantum critical point in a cavity-magnon-qubit system</a></em> 发表于 <a href="https://doi.org/10.1103/d2st-rr91">Physical Review A 113, 033707 (2026)</a>。</span>
+            <span class="lang-only" lang="en">Paper <em><a href="https://doi.org/10.1103/d2st-rr91">Magnon squeezing near a quantum critical point in a cavity-magnon-qubit system</a></em> published in <a href="https://doi.org/10.1103/d2st-rr91">Physical Review A 113, 033707 (2026)</a>.</span>
+          </p>
+        </article>
+      </div>
+
+
+
+    </div>
+  </section>
+
+  <!-- ======================= 研究兴趣 ======================= -->
+  <section class="section section--alt" id="research">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="研究兴趣" data-en="Research Interests">研究兴趣</h2>
+      </div>
+
+      <div class="interests">
+        <article class="interest">
+          <h3 class="interest__title">
+            <span class="interest__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"></path>
+              </svg>
+            </span>
+            <span data-zh="自旋压缩与纠缠态" data-en="Spin Squeezing &amp; Entanglement">自旋压缩与纠缠态</span>
+          </h3>
+          <p class="interest__desc"
+             data-zh="腔 QED 系统中集体原子自旋压缩态与纠缠态的制备。"
+             data-en="Preparation of collective atomic spin-squeezed and entangled states in cavity QED systems.">
+            腔 QED 系统中集体原子自旋压缩态与纠缠态的制备。
+          </p>
+        </article>
+
+        <article class="interest">
+          <h3 class="interest__title">
+            <span class="interest__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18"></path><path d="m7 14 4-4 3 3 5-6"></path>
+              </svg>
+            </span>
+            <span data-zh="量子相变调控" data-en="Quantum Phase Transitions">量子相变调控</span>
+          </h3>
+          <p class="interest__desc"
+             data-zh="量子 Rabi 模型及拓展模型中量子相变的调控机制。"
+             data-en="Control mechanisms of quantum phase transitions in the quantum Rabi model and its extensions.">
+            量子 Rabi 模型及拓展模型中量子相变的调控机制。
+          </p>
+        </article>
+
+        <article class="interest">
+          <h3 class="interest__title">
+            <span class="interest__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 7v5l3 2"></path>
+              </svg>
+            </span>
+            <span data-zh="临界量子计量" data-en="Critical Quantum Metrology">临界量子计量</span>
+          </h3>
+          <p class="interest__desc"
+             data-zh="基于临界系统的临界量子计量。"
+             data-en="Critical quantum metrology based on quantum critical systems.">
+            基于临界系统的临界量子计量。
+          </p>
+        </article>
+
+        <article class="interest">
+          <h3 class="interest__title">
+            <span class="interest__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12c0-2 2-4 4-4s4 2 4 4-2 4-4 4"></path>
+                <path d="M16 12c0-2 2-4 4-4"></path>
+              </svg>
+            </span>
+            <span data-zh="磁振子非经典态" data-en="Nonclassical Magnon States">磁振子非经典态</span>
+          </h3>
+          <p class="interest__desc"
+             data-zh="基于磁振子的混合量子系统中磁振子非经典态的制备，如压缩态、猫态、Fock 态等。"
+             data-en="Preparation of nonclassical magnon states, including squeezed states, cat states, and Fock states, in magnon-based hybrid quantum systems.">
+            基于磁振子的混合量子系统中磁振子非经典态的制备，如压缩态、猫态、Fock 态等。
+          </p>
+        </article>
+
+        <article class="interest">
+          <h3 class="interest__title">
+            <span class="interest__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+                <path d="M9 9h6v6H9z"></path>
+              </svg>
+            </span>
+            <span data-zh="GKP 态与量子纠错" data-en="GKP States &amp; Error Correction">GKP 态与量子纠错</span>
+          </h3>
+          <p class="interest__desc"
+             data-zh="磁振子 GKP 态的理论制备方案及其在玻色子量子纠错中的应用。"
+             data-en="Theoretical schemes for preparing magnonic Gottesman–Kitaev–Preskill (GKP) states and their applications in bosonic quantum error correction.">
+            磁振子 GKP 态的理论制备方案及其在玻色子量子纠错中的应用。
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 精选论文 ======================= -->
+  <section class="section" id="publications">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="精选论文" data-en="Selected Papers">精选论文</h2>
+        <button class="section__more section__more--btn" id="pubsToggle" type="button"
+                aria-expanded="false" aria-controls="pubsAll">
+          <span data-zh="全部论文 →" data-en="All publications →">全部论文 →</span>
+        </button>
+      </div>
+
+            <div class="pubs">
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://arxiv.org/abs/2607.27771" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-01.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://arxiv.org/abs/2607.27771" target="_blank" rel="noopener noreferrer">Quantum Magnonics: Quantum States Generation and Applications</a>
+            </h3>
+
+            <p class="pub__authors">Z.-X. Lu<sup>*</sup>, X. Zuo<sup>*</sup>, X.-L. Hei<sup>*</sup>, <strong>Gang Liu</strong><sup>†</sup>, Z.-X. Liu<sup>†</sup>, Q. Guo<sup>†</sup>, P.-B. Li<sup>†</sup>, J. Li<sup>†</sup></p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> We review the preparation methods of magnonic quantum states and their applications in quantum information and precision measurement, providing a unified theoretical framework for the field.
+            </p>
+
+            <p class="pub__meta"><a href="https://arxiv.org/abs/2607.27771"><em>arXiv:2607.27771</em></a> (2026) · <i>Invited Topical Review, <a href="https://iopscience.iop.org/journal/qst"><em>Quantum Science and Technology</em></a> (under review)</i></p>
+
+            <div class="pub__topics">
+            <span class="topic">Quantum Magnonics</span>
+            <span class="topic">Review</span>
+            <span class="topic">Quantum Information</span>
+            </div>
+          </div>
+        </article>
+
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-02.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc" target="_blank" rel="noopener noreferrer">Macroscopic entanglement between two magnon modes via two-tone driving of a superconducting qubit</a>
+            </h3>
+
+            <p class="pub__authors">R.-C. Yang<sup>*</sup>, <strong>Gang Liu</strong><sup>*</sup>, G. Li, J. Li<sup>†</sup></p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> By two-tone driving of a superconducting qubit, we establish macroscopic entanglement between two magnon modes. The entanglement evolves non-monotonically with the drive strength, providing a new route toward solid-state quantum information devices.
+            </p>
+
+            <p class="pub__meta"><a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc"><em>Physical Review A</em></a> <strong>114</strong>, 043707 (2026)</p>
+
+            <div class="pub__topics">
+            <span class="topic">Macroscopic Entanglement</span>
+            <span class="topic">Superconducting Qubit</span>
+            <span class="topic">Magnons</span>
+            </div>
+          </div>
+        </article>
+
+
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://doi.org/10.1103/d2st-rr91" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-03.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://doi.org/10.1103/d2st-rr91" target="_blank" rel="noopener noreferrer">Magnon squeezing near a quantum critical point in a cavity-magnon-qubit system</a>
+            </h3>
+
+            <p class="pub__authors"><strong>Gang Liu</strong>, G. Li, R.-C. Yang, W. Xiong<sup>†</sup>, J. Li<sup>†</sup></p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> We show that magnon squeezing is strongly enhanced near the quantum critical point, determined by the competition between conditional displacement and dissipation. This mechanism can amplify the metrological gain of critical points.
+            </p>
+
+            <p class="pub__meta"><a href="https://doi.org/10.1103/d2st-rr91"><em>Physical Review A</em></a> <strong>113</strong>, 033707 (2026)</p>
+
+            <div class="pub__topics">
+            <span class="topic">Quantum Critical Point</span>
+            <span class="topic">Magnon Squeezing</span>
+            <span class="topic">Cavity Magnonics</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://doi.org/10.1103/cf1d-wn4h" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-04.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://doi.org/10.1103/cf1d-wn4h" target="_blank" rel="noopener noreferrer">A²-robust superradiant phase transition in hybrid qubit-cavity optomechanics</a>
+            </h3>
+
+            <p class="pub__authors"><strong>Gang Liu</strong>, W. Xiong<sup>†</sup></p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> We show that the superradiant phase transition is A²-robust, i.e. its occurrence does not depend on the specific value of the A² coefficient. This provides a much wider tuning window for observing the transition experimentally.
+            </p>
+
+            <p class="pub__meta"><a href="https://doi.org/10.1103/cf1d-wn4h"><em>Physical Review A</em></a> <strong>112</strong>, 063727 (2025)</p>
+
+            <div class="pub__topics">
+            <span class="topic">Superradiant Phase Transition</span>
+            <span class="topic">Optomechanics</span>
+            <span class="topic">A² Robustness</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://doi.org/10.1103/zhgm-p3ss" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-05.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://doi.org/10.1103/zhgm-p3ss" target="_blank" rel="noopener noreferrer">Magnon cat states in a cavity-magnon-qubit system via two-magnon driving and dissipation</a>
+            </h3>
+
+            <p class="pub__authors"><strong>Gang Liu</strong><sup>†</sup>, G. Li, H. Tang<sup>†</sup>, J. Li</p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> By exploiting the combined effect of two-magnon driving and dissipation, we propose a protocol for magnonic cat states, which share strong non-Gaussian entanglement with the photonic mode using currently available parameters.
+            </p>
+
+            <p class="pub__meta"><a href="https://doi.org/10.1103/zhgm-p3ss"><em>Physical Review A</em></a> <strong>112</strong>, 023709 (2025)</p>
+
+            <div class="pub__topics">
+            <span class="topic">Magnon Cat States</span>
+            <span class="topic">Non-Gaussian Entanglement</span>
+            <span class="topic">Dissipation Engineering</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://doi.org/10.1103/PhysRevA.108.033704" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-06.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://doi.org/10.1103/PhysRevA.108.033704" target="_blank" rel="noopener noreferrer">Switchable superradiant phase transition with Kerr magnons</a>
+            </h3>
+
+            <p class="pub__authors"><strong>Gang Liu</strong>, W. Xiong<sup>†</sup>, Z.-J. Ying<sup>†</sup></p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> The Kerr nonlinearity produces two stable branches of the superradiant phase, allowing the transition to be switched on and off by an external field and providing a route toward switchable control of quantum phase transitions.
+            </p>
+
+            <p class="pub__meta"><a href="https://doi.org/10.1103/PhysRevA.108.033704"><em>Physical Review A</em></a> <strong>108</strong>, 033704 (2023)</p>
+
+            <div class="pub__topics">
+            <span class="topic">Superradiant Phase Transition</span>
+            <span class="topic">Kerr Nonlinearity</span>
+            <span class="topic">Switchable Transition</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="pub">
+          <figure class="pub__figure">
+            <a href="https://doi.org/10.1103/PhysRevA.99.043840" target="_blank" rel="noopener noreferrer"
+               aria-label="Publication link">
+              <img class="pub__thumb" src="assets/img/papers/paper-07.png"
+                   alt="Figure from the publication" width="230" height="172" loading="lazy">
+            </a>
+          </figure>
+
+          <div>
+            <h3 class="pub__title">
+              <a href="https://doi.org/10.1103/PhysRevA.99.043840" target="_blank" rel="noopener noreferrer">Spin squeezing via one- and two-axis twisting induced by a single off-resonance stimulated Raman scattering in a cavity</a>
+            </h3>
+
+            <p class="pub__authors"><strong>Gang Liu</strong>, Y.-N. Wang, L.-F. Yan, N.-Q. Jiang, W. Xiong, M.-F. Wang<sup>†</sup></p>
+
+            <p class="pub__highlight">
+              <strong>Highlight:</strong> We show that a single off-resonance stimulated Raman scattering process induces both one-axis and two-axis twisting, achieving an optimal squeezing of 87.3% and providing a simple squeezing source for cavity-based sensing.
+            </p>
+
+            <p class="pub__meta"><a href="https://doi.org/10.1103/PhysRevA.99.043840"><em>Physical Review A</em></a> <strong>99</strong>, 043840 (2019)</p>
+
+            <div class="pub__topics">
+            <span class="topic">Spin Squeezing</span>
+            <span class="topic">Cavity QED</span>
+            <span class="topic">Raman Scattering</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================= 项目 ======================= -->
+  <section class="section section--alt" id="projects">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="研究项目" data-en="Projects">研究项目</h2>
+      </div>
+
+            <ul class="grants">
+        <li class="grant">
+          <p class="grant__title"
+             data-zh="磁子-超导量子比特系统中超辐射相变的实现及应用"
+             data-en="Realization and Applications of Superradiant Phase Transition in Magnon-Superconducting Qubit Systems">
+            磁子-超导量子比特系统中超辐射相变的实现及应用
+          </p>
+          <p class="grant__meta">
+            <span class="grant__no" data-zh="国家自然科学基金青年（C）项目 · 12605048"
+                                     data-en="NSFC Youth Program (Category C) · 12605048">国家自然科学基金青年（C）项目 · 12605048</span>
+            <span class="grant__time">2027.01 – 2029.12</span>
+            <span class="grant__role grant__role--pi" data-zh="主持" data-en="PI">主持</span>
+          </p>
+        </li>
+
+        <li class="grant">
+          <p class="grant__title"
+             data-zh="基于磁振子混合量子系统的量子态制备"
+             data-en="Quantum State Preparation Based on Magnon Hybrid Quantum Systems">
+            基于磁振子混合量子系统的量子态制备
+          </p>
+          <p class="grant__meta">
+            <span class="grant__no" data-zh="浙江省杰出青年科学基金 · LR25A050001"
+                                     data-en="Zhejiang Provincial Natural Science Foundation for Distinguished Young Scholars · LR25A050001">浙江省杰出青年科学基金 · LR25A050001</span>
+            <span class="grant__time">2025.01 – 2027.12</span>
+            <span class="grant__role" data-zh="参与" data-en="Co-PI">参与</span>
+          </p>
+        </li>
+
+        <li class="grant">
+          <p class="grant__title"
+             data-zh="原子系综中高度自旋压缩态产生的研究"
+             data-en="Generation of Highly Spin-Squeezed States in Atomic Ensembles">
+            原子系综中高度自旋压缩态产生的研究
+          </p>
+          <p class="grant__meta">
+            <span class="grant__no" data-zh="国家自然科学基金青年项目 · 11504273"
+                                     data-en="NSFC Youth Program · 11504273">国家自然科学基金青年项目 · 11504273</span>
+            <span class="grant__time">2016.01 – 2018.12</span>
+            <span class="grant__role" data-zh="参与" data-en="Co-PI">参与</span>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ======================= 教育背景 ======================= -->
+  <section class="section" id="education">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="教育背景" data-en="Education">教育背景</h2>
+      </div>
+
+            <div class="timeline timeline--edu">
+        <article class="tl-item">
+          <p class="tl-when">2020.09 – 2024.06</p>
+          <div class="tl-what">
+            <h3 class="tl-degree" data-zh="理学博士" data-en="Ph.D.">理学博士</h3>
+            <p class="tl-org">
+              <a href="https://www.lzu.edu.cn/" target="_blank" rel="noopener noreferrer"
+                 data-zh="兰州大学" data-en="Lanzhou University">兰州大学</a>
+              <span data-zh=" · 物理科学与技术学院 · 理论物理专业 · 应祖建课题组"
+                    data-en=" · School of Physics and Technology · Theoretical Physics · Group of Prof. Zujian Ying">
+                · 物理科学与技术学院 · 理论物理专业 · 应祖建课题组</span>
+            </p>
+            <p class="tl-note">
+              <span class="tl-note-label" data-zh-text="研究方向：" data-en-text="Research:">研究方向：</span>
+              <span data-zh="自旋压缩态制备 / 超辐射相变调控"
+                    data-en="Spin-squeezed state generation / control of superradiant phase transitions">
+                自旋压缩态制备 / 超辐射相变调控</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="tl-item">
+          <p class="tl-when">2016.09 – 2019.06</p>
+          <div class="tl-what">
+            <h3 class="tl-degree" data-zh="理学硕士" data-en="M.Sc.">理学硕士</h3>
+            <p class="tl-org">
+              <a href="https://www.wzu.edu.cn/" target="_blank" rel="noopener noreferrer"
+                 data-zh="温州大学" data-en="Wenzhou University">温州大学</a>
+              <span data-zh=" · 物理与电子信息工程学院 · 凝聚态物理专业 · 王明锋课题组"
+                    data-en=" · School of Physics and Electronic Information · Condensed Matter Physics · Mingfeng Wang's Group">
+                · 物理与电子信息工程学院 · 凝聚态物理专业 · 王明锋课题组</span>
+            </p>
+            <p class="tl-note">
+              <span class="tl-note-label" data-zh-text="研究方向：" data-en-text="Research:">研究方向：</span>
+              <span data-zh="腔量子电动力学，自旋压缩态与纠缠态制备"
+                    data-en="Cavity QED; spin-squeezed and entangled state generation">
+                腔量子电动力学，自旋压缩态与纠缠态制备</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="tl-item">
+          <p class="tl-when">2012.09 – 2016.06</p>
+          <div class="tl-what">
+            <h3 class="tl-degree" data-zh="理学学士" data-en="B.Sc.">理学学士</h3>
+            <p class="tl-org">
+              <a href="https://www.ldxy.edu.cn/" target="_blank" rel="noopener noreferrer"
+                 data-zh="陇东学院" data-en="Longdong University">陇东学院</a>
+              <span data-zh=" · 电气工程学院 · 物理师范专业"
+                    data-en=" · School of Electrical Engineering · Physics Education">
+                · 电气工程学院 · 物理师范专业</span>
+            </p>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================= 工作经历 ======================= -->
+  <section class="section section--alt" id="experience">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="工作经历" data-en="Work Experience">工作经历</h2>
+      </div>
+
+            <div class="timeline">
+        <article class="tl-item">
+          <p class="tl-when">2024.07 – <span data-zh="至今" data-en="present">至今</span></p>
+          <div class="tl-what">
+            <h3 class="tl-degree" data-zh="博士后" data-en="Postdoctoral Fellow">博士后</h3>
+            <p class="tl-org">
+              <a href="https://www.zju.edu.cn/" target="_blank" rel="noopener noreferrer"
+                 data-zh="浙江大学" data-en="Zhejiang University">浙江大学</a>
+              <span data-zh=" · 物理学院 · 李杰课题组"
+                    data-en=" · School of Physics · Jie Li's Group">
+                · 物理学院 · 李杰课题组</span>
+            </p>
+            <p class="tl-note">
+              <span class="tl-note-label" data-zh-text="研究方向：" data-en-text="Research:">研究方向：</span>
+              <span data-zh="磁振子混合量子系统中的非经典态制备（猫态、压缩态、GKP 态）/ 量子相变调控 / 量子纠错"
+                    data-en="Nonclassical magnonic states (cat, squeezed, GKP) in hybrid quantum systems / quantum phase transitions / quantum error correction">
+                磁振子混合量子系统中的非经典态制备（猫态、压缩态、GKP 态）/ 量子相变调控 / 量子纠错</span>
+            </p>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================= 相册 ======================= -->
+  <section class="section section--alt" id="gallery">
+    <div class="container">
+      <div class="section__head">
+        <h2 class="section__title" data-zh="相册" data-en="Gallery">相册</h2>
+      </div>
+
+      <!--
+        添加照片：复制一个 <figure> 块，把 src 换成你的图片路径，
+        建议尺寸 800×600（4:3）或 1000×750，同一区域的照片保持一致比例。
+        图片放 assets/img/gallery/ 目录下。
+      -->
+      <div class="gallery">
+        <figure class="shot">
+          <img src="assets/img/gallery/placeholder-1.svg"
+               alt="照片占位" width="320" height="240" loading="lazy">
+          <figcaption data-zh="照片说明" data-en="Photo caption">照片说明</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/img/gallery/placeholder-2.svg"
+               alt="照片占位" width="320" height="240" loading="lazy">
+          <figcaption data-zh="照片说明" data-en="Photo caption">照片说明</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/img/gallery/placeholder-3.svg"
+               alt="照片占位" width="320" height="240" loading="lazy">
+          <figcaption data-zh="照片说明" data-en="Photo caption">照片说明</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/img/gallery/placeholder-4.svg"
+               alt="照片占位" width="320" height="240" loading="lazy">
+          <figcaption data-zh="照片说明" data-en="Photo caption">照片说明</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/img/gallery/placeholder-5.svg"
+               alt="照片占位" width="320" height="240" loading="lazy">
+          <figcaption data-zh="照片说明" data-en="Photo caption">照片说明</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img src="assets/img/gallery/placeholder-6.svg"
+               alt="照片占位" width="320" height="240" loading="lazy">
+          <figcaption data-zh="照片说明" data-en="Photo caption">照片说明</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 页脚 ======================= -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>
+        <span data-zh="由 WorkBuddy 协助搭建 · 最后更新于 2026 年 10 月"
+              data-en="Built with WorkBuddy · Last updated October 2026">
+          由 WorkBuddy 协助搭建 · 最后更新于 2026 年 10 月
+        </span>
+      </p>
+      <ul class="footer__links">
+        <li><a href="https://github.com/iuang0305" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://scholar.google.com/citations?user=dG1VrdMAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
+        <li><a href="https://www.researchgate.net/profile/Gang-Liu-88" target="_blank" rel="noopener noreferrer">ResearchGate</a></li>
+        <li><a href="https://orcid.org/0000-0001-5182-6222" target="_blank" rel="noopener noreferrer">ORCID</a></li>
+        <li><a href="mailto:gangliuphys@gmail.com">gangliuphys@gmail.com</a></li>
+      </ul>
+    </div>
+  </footer>
+</main>
+
+<!-- ======================= 搜索面板 ======================= -->
+<div class="search" id="searchPanel" hidden role="dialog" aria-modal="true"
+     aria-label="Site search">
+  <div class="search__panel">
+    <div class="search__head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+      </svg>
+      <input class="search__input" id="searchInput" type="search" autocomplete="off"
+             placeholder="搜索论文、项目、新闻…  (Search…)" aria-label="Search">
+      <kbd class="search__hint">Esc</kbd>
+    </div>
+    <div class="search__results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="assets/js/site.js"></script>
+<!-- ======================= 全部论文弹窗 ======================= -->
+<div class="modal" id="pubsModal" hidden role="dialog" aria-modal="true"
+     aria-labelledby="pubsModalTitle">
+  <div class="modal__panel">
+    <div class="modal__head">
+      <h2 class="modal__title" id="pubsModalTitle"
+          data-zh="全部论文" data-en="All Publications">全部论文</h2>
+      <button class="modal__close" id="pubsModalClose" type="button"
+              aria-label="Close" title="Close (Esc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="modal__body" id="pubsModalBody">
+<div class="pubs-all" id="pubsAll">
+        <p class="pubs-all__legend">
+          <sup>*</sup><span data-zh="这些作者贡献相同"
+                              data-en="these authors contributed equally">这些作者贡献相同</span>；
+          <sup>†</sup><span data-zh="通讯作者"
+                              data-en="corresponding author">通讯作者</span>
+        </p>
+
+                <ol class="reflist">
+          <li class="refitem">
+            <p class="refitem__authors">R.-C. Yang<sup>*</sup>, <strong>Gang Liu</strong><sup>*</sup>, G. Li, J. Li<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc" target="_blank" rel="noopener noreferrer">Macroscopic entanglement between two magnon modes via two-tone driving of a superconducting qubit</a></p>
+            <p class="refitem__venue">
+              <a href="https://journals.aps.org/pra/abstract/10.1103/jtyx-xsgc" target="_blank" rel="noopener noreferrer">Phys. Rev. A 114, 043707 (2026)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors">Z.-X. Lu<sup>*</sup>, X. Zuo<sup>*</sup>, X.-L. Hei<sup>*</sup>, <strong>Gang Liu</strong><sup>†</sup>, Z.-X. Liu<sup>†</sup>, Q. Guo<sup>†</sup>, P.-B. Li<sup>†</sup>, J. Li<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://arxiv.org/abs/2607.27771" target="_blank" rel="noopener noreferrer">Quantum Magnonics: Quantum States Generation and Applications</a></p>
+            <p class="refitem__venue">
+              <a href="https://arxiv.org/abs/2607.27771" target="_blank" rel="noopener noreferrer">arXiv:2607.27771 (2026)</a>
+              <span class="refitem__note" data-zh="（受邀专题综述，审稿中）" data-en="(Invited Topical Review, under review)">（受邀专题综述，审稿中）</span>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors">G. Li<sup>*</sup>, <strong>Gang Liu</strong><sup>*,†</sup>, R.-C. Yang, J. Li<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://arxiv.org/abs/2606.25511" target="_blank" rel="noopener noreferrer">Preparing two-mode magnonic Schrödinger cat states in a cavity-magnon-qubit system</a></p>
+            <p class="refitem__venue">
+              <a href="https://arxiv.org/abs/2606.25511" target="_blank" rel="noopener noreferrer">arXiv:2606.25511 (2026)</a>
+              <span class="refitem__note" data-zh="（已投稿 PRA）" data-en="(submitted to PRA)">（已投稿 PRA）</span>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors">Z.-X. Lu<sup>*</sup>, <strong>Gang Liu</strong><sup>*</sup>, M. Fadel, J. Li<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://arxiv.org/abs/2604.27565" target="_blank" rel="noopener noreferrer">Magnonic Gottesman-Kitaev-Preskill states</a></p>
+            <p class="refitem__venue">
+              <a href="https://arxiv.org/abs/2604.27565" target="_blank" rel="noopener noreferrer">arXiv:2604.27565 (2026)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors"><strong>Gang Liu</strong><sup>†</sup>, J. Liu, F. Qiao<sup>†</sup>, R.-C. Yang<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://arxiv.org/abs/2604.02924" target="_blank" rel="noopener noreferrer">Generation of magnonic squeezed state and its superposition in a hybrid qubit-magnon system</a></p>
+            <p class="refitem__venue">
+              <a href="https://arxiv.org/abs/2604.02924" target="_blank" rel="noopener noreferrer">arXiv:2604.02924 (2026)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors">J. Liu, Y. Mu, L. Song, <strong>Gang Liu</strong>, M. Wang</p>
+            <p class="refitem__title"><a href="https://journals.aps.org/pra/abstract/10.1103/jk8g-t1d8" target="_blank" rel="noopener noreferrer">Engineering near-unitary one-axis-twisting evolution via a driven Tavis-Cummings model</a></p>
+            <p class="refitem__venue">
+              <a href="https://journals.aps.org/pra/abstract/10.1103/jk8g-t1d8" target="_blank" rel="noopener noreferrer">Phys. Rev. A 113, 043710 (2026)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors"><strong>Gang Liu</strong>, G. Li, R.-C. Yang, W. Xiong<sup>†</sup>, J. Li<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://doi.org/10.1103/d2st-rr91" target="_blank" rel="noopener noreferrer">Magnon squeezing near a quantum critical point in a cavity-magnon-qubit system</a></p>
+            <p class="refitem__venue">
+              <a href="https://doi.org/10.1103/d2st-rr91" target="_blank" rel="noopener noreferrer">Phys. Rev. A 113, 033707 (2026)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors"><strong>Gang Liu</strong>, W. Xiong<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://doi.org/10.1103/cf1d-wn4h" target="_blank" rel="noopener noreferrer">A<sup>2</sup>-robust superradiant phase transition in hybrid qubit-cavity optomechanics</a></p>
+            <p class="refitem__venue">
+              <a href="https://doi.org/10.1103/cf1d-wn4h" target="_blank" rel="noopener noreferrer">Phys. Rev. A 112, 063727 (2025)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors"><strong>Gang Liu</strong><sup>†</sup>, G. Li, H. Tang<sup>†</sup>, J. Li</p>
+            <p class="refitem__title"><a href="https://doi.org/10.1103/zhgm-p3ss" target="_blank" rel="noopener noreferrer">Magnon cat states in a cavity-magnon-qubit system via two-magnon driving and dissipation</a></p>
+            <p class="refitem__venue">
+              <a href="https://doi.org/10.1103/zhgm-p3ss" target="_blank" rel="noopener noreferrer">Phys. Rev. A 112, 023709 (2025)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors"><strong>Gang Liu</strong>, W. Xiong<sup>†</sup>, Z.-J. Ying<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://link.aps.org/doi/10.1103/PhysRevA.108.033704" target="_blank" rel="noopener noreferrer">Switchable superradiant phase transition with Kerr magnons</a></p>
+            <p class="refitem__venue">
+              <a href="https://link.aps.org/doi/10.1103/PhysRevA.108.033704" target="_blank" rel="noopener noreferrer">Phys. Rev. A 108, 033704 (2023)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors">L. Wang, Y. Wang, Y. Cheng, Z. Yan, L. Xie, <strong>Gang Liu</strong>, J. Fan, D. Wang, Y. Song, L. He, W. Xiong, M. Wang</p>
+            <p class="refitem__title"><a href="https://arxiv.org/abs/2301.04520" target="_blank" rel="noopener noreferrer">Entangling spins using cubic nonlinear dynamics</a></p>
+            <p class="refitem__venue">
+              <a href="https://arxiv.org/abs/2301.04520" target="_blank" rel="noopener noreferrer">arXiv:2301.04520 (2023)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors">Z.-J. Ying, S. Felicetti, <strong>Gang Liu</strong>, D. Braak</p>
+            <p class="refitem__title"><a href="https://www.mdpi.com/1099-4300/24/8/1015" target="_blank" rel="noopener noreferrer">Critical Quantum Metrology in the Non-Linear Quantum Rabi Model</a></p>
+            <p class="refitem__venue">
+              <a href="https://www.mdpi.com/1099-4300/24/8/1015" target="_blank" rel="noopener noreferrer">Entropy 24(8), 1015 (2022)</a>
+            </p>
+          </li>
+          <li class="refitem">
+            <p class="refitem__authors"><strong>Gang Liu</strong>, Y.-N. Wang, L.-F. Yan, N.-Q. Jiang, W. Xiong, M.-F. Wang<sup>†</sup></p>
+            <p class="refitem__title"><a href="https://link.aps.org/doi/10.1103/PhysRevA.99.043840" target="_blank" rel="noopener noreferrer">Spin squeezing via one- and two-axis twisting induced by a single off-resonance stimulated Raman scattering in a cavity</a></p>
+            <p class="refitem__venue">
+              <a href="https://link.aps.org/doi/10.1103/PhysRevA.99.043840" target="_blank" rel="noopener noreferrer">Phys. Rev. A 99, 043840 (2019)</a>
+            </p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
