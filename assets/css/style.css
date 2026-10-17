@@ -653,6 +653,12 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   gap: var(--sp-6);
 }
 
+/* flex item 默认 min-width:auto 会被内容（如长英文标题、宽图）撑破容器，
+   必须显式设为 0 才能真正收缩。这是最常见的移动端横向溢出原因。 */
+.pub {
+  min-width: 0;
+}
+
 .pub {
   display: grid;
   grid-template-columns: 230px 1fr;
@@ -1530,11 +1536,6 @@ mark {
    14. 响应式
    -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
-  .hero__head {
-    grid-template-columns: 176px 1fr;
-    gap: var(--sp-5);
-  }
-
   .hero__photo {
     width: 176px;
     height: 216px;
@@ -1601,9 +1602,43 @@ mark {
     padding: 0 var(--sp-4);
   }
 
-  /* 全局防溢出：中文长串与长 URL 在窄屏断行 */
+  /* 全局防溢出 */
   body {
     overflow-x: hidden;
+  }
+
+  /* grid/flex 子项的 min-width 默认是 auto，会被长英文标题、宽图、
+     长 URL 撑破容器，导致整页横向滚动。窄屏统一允许收缩。 */
+  .pubs > *,
+  .gallery > *,
+  .interests > *,
+  .tl-item > *,
+  .news__list > *,
+  .grants > *,
+  .reflist > *,
+  .container > * {
+    min-width: 0;
+  }
+
+  /* 长串英文与 URL 允许在任意位置断行 */
+  .pub__title,
+  .pub__meta,
+  .pub__highlight,
+  .refitem__title,
+  .refitem__authors,
+  .refitem__venue,
+  .tl-org,
+  .grant__title,
+  .news__text,
+  .news__text em,
+  .news__text a {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* 链接本身单独断行，避免撑宽父容器 */
+  .news__text a {
+    max-width: 100%;
   }
 
   .hero__grid,
@@ -1631,17 +1666,17 @@ mark {
     padding: var(--sp-6) 0 var(--sp-5);
   }
 
-  .hero__head {
-    display: flex;
-    align-items: center;
+  /* 窄屏改为上下堆叠：照片在上、正文在下，避免并排挤压导致文字被截断 */
+  .hero__grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
     gap: var(--sp-4);
-    margin-bottom: var(--sp-4);
-    min-width: 0;
   }
 
-  /* 文字块允许收缩并正常换行，避免横向溢出 */
-  .hero__head > div {
+  .hero__body {
+    width: 100%;
     min-width: 0;
+    text-align: center;
   }
 
   .hero__name,
@@ -1650,9 +1685,10 @@ mark {
     overflow-wrap: anywhere;
   }
 
+  /* 头像居中且不缩小 */
   .hero__photo {
-    width: 100px;
-    height: 124px;
+    width: 132px;
+    height: 164px;
     flex-shrink: 0;
   }
 
@@ -1675,18 +1711,27 @@ mark {
   }
 
   /* 窄屏论文：配图缩到与文字并排，减少滚动长度 */
+  /* 窄屏：论文卡片改为上下堆叠，避免正文被压缩截断 */
   .pub {
-    grid-template-columns: 104px 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-3);
     align-items: start;
   }
 
+  /* 所有子元素允许收缩，配合上面的 minmax(0,1fr) 防止撑破容器 */
+  .pub > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .pub__figure {
-    max-width: none;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .pub__thumb {
-    aspect-ratio: 1 / 1;
+    width: 100%;
+    aspect-ratio: 3 / 2;
   }
 
   .pub__title {
