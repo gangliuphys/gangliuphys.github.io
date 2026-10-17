@@ -1201,10 +1201,13 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   border-bottom: none;
 }
 
+/* 研究项目：整栏文字统一采用「理学博士」（.tl-degree）的字号，
+   仅题目与「主持」标签加粗，颜色与字重对齐教育背景，使两栏观感一致。 */
 .grant__title {
-  font-size: var(--fs-md);
-  font-weight: 600;
+  font-size: var(--fs-md);          /* = .tl-degree 的字号 */
+  font-weight: 640;                 /* 与 .tl-degree 一致 */
   line-height: 1.5;
+  color: var(--text);               /* 与 .tl-degree 同色 */
   /* 占据剩余空间，把元信息推到最右 */
   flex: 1 1 auto;
   min-width: 0;
@@ -1215,8 +1218,8 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem 1rem;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+  font-size: var(--fs-md);          /* 与题目同字号 */
+  color: var(--text-secondary);     /* 与 .tl-org 同色 */
   /* 靠右排列，不再换行 */
   flex: 0 1 auto;
   margin-left: auto;
@@ -1231,10 +1234,10 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 }
 
 .grant__role {
-  padding: 0.14rem 0.6rem;
+  padding: 0.1rem 0.55rem;
   border-radius: var(--radius-full);
-  font-size: var(--fs-xs);
-  font-weight: 600;
+  font-size: var(--fs-md);          /* 与题目同字号 */
+  font-weight: 640;                 /* 「主持」加粗 */
   background: var(--tag-bg);
   border: 1px solid var(--tag-border);
   color: var(--tag-text);
