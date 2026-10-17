@@ -4,8 +4,7 @@
 
 打开 <https://github.com/>，登录后看右上角头像旁边的名字。
 
-- 如果是 `iuang0305` → 网站地址 `https://iuang0305.github.io/`（当前配置，无需改动）
-- 如果是 `gangliuphys` → 网站地址 `https://gangliuphys.github.io/`，需要改 3 个文件（见文末）
+当前站点配置的用户名已更新为 **`gangliuphys`**，网站地址为 `https://gangliuphys.github.io/`。
 
 ---
 
@@ -84,15 +83,15 @@ https://你的用户名.github.io/
 
 ---
 
-## 如果用户名不是 iuang0305
+## 如果以后更换 GitHub 用户名
 
-需要改这三处（用记事本打开改，全文替换 `iuang0305.github.io`）：
+需要改这几处（全文替换 `gangliuphys`）：
 
 1. `index.html` — 搜 `og:url`
 2. `robots.txt` — 搜 `Sitemap:`
 3. `sitemap.xml` — 搜 `<loc>`
 
-另外 `index.html` 里页脚的 GitHub 主页链接也要改成你的实际用户名。
+另外 `index.html` 里的页脚与 Hero 按钮 GitHub 链接（共 2 处）。
 改完重新执行第 3 步的 `git add` / `commit` / `push`。
 
 ---
