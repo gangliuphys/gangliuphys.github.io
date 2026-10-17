@@ -1370,17 +1370,12 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   line-height: 1.5;
 }
 
+/* 照片说明里的日期：等宽数字 + 稍浅色，后接空格接描述。
+   不用底色标签，保持「2026.08 和熊伟教授合影」这样的连续文本。 */
 .shot__date {
-  display: inline-block;
-  margin-right: 0.4rem;
-  padding: 0.06rem 0.42rem;
-  border-radius: var(--radius-sm);
-  background: var(--tag-bg);
   color: var(--text-muted);
-  font-size: var(--fs-xs);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  vertical-align: 0.08em;
 }
 
 /* --------------------------------------------------------------------------
