@@ -514,48 +514,53 @@
   /* ------------------------------------------------------------------
      累计访问次数
      ------------------------------------------------------------------
-     走不蒜子自建后端（busuanzi.icodeq.com），无需注册、按域名统计。
-     加载失败时保持隐藏，不影响页面观感。
+     用「不蒜子」官方 JSONP 机制：动态插入 <script>，服务端读取 Referer
+     判定统计对象并回调数据。
+
+     为什么必须用 JSONP 而不是 fetch：
+       该服务的 API 端点返回 Content-Type: text/html 且未开放 CORS，
+       fetch 拿不到可解析的 JSON。JSONP 走 <script> 加载不受同源策略限制。
+
+     失败或超过 5 秒则保持隐藏，不在页脚留下「—」或报错。
      ------------------------------------------------------------------ */
   function initVisitCount() {
-    var wrap = document.querySelector('.footer__visit');
+    var wrap = document.getElementById('visit-wrap');
     if (!wrap) return;
 
-    // 用户若开启了「减少动态效果」或极简偏好，仍照常计数（这是信息而非动效）
-    var target = location.origin + location.pathname;
-    var endpoint = 'https://busuanzi.icodeq.com/api/v1/getpv?url='
-      + encodeURIComponent(target);
+    var timer = setTimeout(function() { wrap.hidden = true; }, 5000);
+    var done = false;
 
-    var shown = false;
+    var cbName = 'BusuanziCallback_' + Date.now();
+    var script = document.createElement('script');
+    script.src = 'https://busuanzi.icodeq.com/busuanzi.pure.mini.js?jsonpCallback=' + cbName;
+    script.async = true;
+    script.referrerPolicy = 'no-referrer-when-downgrade';
 
-    function show(text) {
-      if (shown) return;
-      shown = true;
+    window[cbName] = function(data) {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+
+      var n = parseInt(data && data.site_pv, 10);
+      if (isNaN(n)) { wrap.hidden = true; return; }
+
+      var text = n.toLocaleString('en-US');
       var zh = wrap.querySelector('#visit-count');
       var en = wrap.querySelector('#visit-count-en');
       if (zh) zh.textContent = text;
       if (en) en.textContent = text;
       wrap.hidden = false;
-    }
+    };
 
-    // 超过 8 秒还没拿到数据就放弃，不让访客干等
-    var timer = setTimeout(function() { wrap.hidden = true; }, 8000);
+    script.onerror = function() {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      wrap.hidden = true;
+    };
 
-    fetch(endpoint, { mode: 'cors' })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (d) {
-        clearTimeout(timer);
-        var n = parseInt(d && d.data, 10);
-        if (isNaN(n)) throw new Error('bad payload');
-        show(n.toLocaleString('en-US'));
-      })
-      .catch(function () {
-        clearTimeout(timer);
-        wrap.hidden = true;   // 静默失败：保持隐藏
-      });
+    document.head.appendChild(script);
   }
 
   /* ------------------------------------------------------------------
