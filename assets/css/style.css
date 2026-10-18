@@ -1398,6 +1398,27 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   justify-content: space-between;
 }
 
+/* 累计访问次数：独占一行居中，字号比页脚其他内容更小、颜色更淡，
+   避免抢注意力。加载失败时 JS 会保持 hidden。 */
+.footer__visit {
+  flex: 1 0 100%;
+  margin: 0;
+  text-align: center;
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+.footer__visit span[id^="visit-count"] {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.footer__visit[hidden] {
+  display: none;
+}
+
 .footer__links {
   display: flex;
   flex-wrap: wrap;
