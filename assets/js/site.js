@@ -79,7 +79,7 @@
     //    浏览器标签页、搜索结果、链接预览（分享卡片）都取这里
     const PAGE_TITLE = {
       zh: '刘刚个人主页',
-      en: 'Gang Liu Personal Homepage',
+      en: 'Gang Liu Academic Homepage',
     };
     const newTitle = PAGE_TITLE[lang];
     if (newTitle) {
