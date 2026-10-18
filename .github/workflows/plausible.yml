@@ -71,6 +71,14 @@ jobs:
             exit 1
           fi
 
+          # 数字为 0 说明站点还没有真实访问数据。
+          # 此时不写文件（否则页脚会显示「累计访问 0 次」），
+          # 保留已有数据或让前端保持隐藏。
+          if [ "${PV}" -eq 0 ]; then
+            echo "Plausible 目前记录为 0 次访问（尚无真实访客数据），跳过写入"
+            exit 0
+          fi
+
           python3 -c "
           import json
           json.dump({'pageviews': $PV}, open('assets/visit-count.json','w'))
