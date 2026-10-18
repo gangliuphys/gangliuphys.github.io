@@ -46,6 +46,23 @@
     } catch (e) { /* 隐私模式下 localStorage 不可用，走默认 */ }
   })();
 </script>
+
+<!-- ============================================================
+     Google Analytics 4
+     把下面的 G-XXXXXXXXXX 换成你自己的衡量 ID
+     获取方式：https://analytics.google.com/
+       1) 登录 Google 账号
+       2) 左下角「管理」→「创建媒体资源」→「网站」
+       3) 填写网址 https://gangliuphys.github.io/
+       4) 复制「衡量 ID」（形如 G-ABCD1234EF）
+     ============================================================ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+</script>
 </head>
 
 <body>
@@ -877,6 +894,7 @@
         <span class="lang-only" lang="zh">累计访问 <span id="visit-count">—</span> 次</span>
         <span class="lang-only" lang="en"><span id="visit-count-en">—</span> visits</span>
       </p>
+      <!-- 真实访问计数需要接入统计服务后才有数据；未接入时整行保持 hidden -->
       <ul class="footer__links">
         <li><a href="https://github.com/gangliuphys" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         <li><a href="https://scholar.google.com/citations?user=dG1VrdMAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a></li>
