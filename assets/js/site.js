@@ -514,33 +514,34 @@
   /* ------------------------------------------------------------------
      累计访问次数
      ------------------------------------------------------------------
-     读取仓库里的 counter.json（由 GitHub Actions 定时累加）。
+     现状：未接入统计服务，整行保持隐藏（HTML 上有 hidden 属性）。
 
-     为什么不用第三方统计服务：
-       本项目部署环境的网络对 countapi.xyz、不蒜子（counter 子域）、
-       abacus、open-count 等服务均不通或已失效，实测全部超时。
-       raw.githubusercontent.com 则稳定可达且带 CORS 头，适合做数据源。
+     曾尝试但不可行的方案（网络环境实测）：
+       · countapi.xyz        —— 域名不可达
+       · 不蒜子 icodeq.com   —— 主域可达但 API 返回 HTML 文档；counter 子域超时 20s
+       · abacus / open-count —— 均不可达
+       · GitHub Actions 累加 —— 能跑，但数字与真实访客无关，属于假数据，已移除
 
-     写入由 GitHub Actions 完成（见 .github/workflows/counter.yml），
-     前端只读不写，因此无需在任何公开代码里暴露 Token。
+     要显示真实数字，唯一可行路径是接入统计服务：
+       1. Plausible（推荐，脚本已验证可达）——用 GitHub Actions 代理其 Stats API，
+          密钥存进 Actions secrets，页面只读代理产出的 JSON，密钥永不进前端。
+       2. Google Analytics —— 数字真实，但 GA 无公开读取接口，页脚无法显示。
      ------------------------------------------------------------------ */
   function initVisitCount() {
     var wrap = document.getElementById('visit-wrap');
     if (!wrap) return;
 
-    var url = 'https://raw.githubusercontent.com/gangliuphys/'
-      + 'gangliuphys.github.io/main/counter.json';
-
+    var endpoint = 'assets/visit-count.json';
     var timer = setTimeout(function() { wrap.hidden = true; }, 6000);
 
-    fetch(url, { cache: 'no-store' })
+    fetch(endpoint, { cache: 'no-store' })
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
       .then(function(d) {
         clearTimeout(timer);
-        var n = parseInt(d && d.count, 10);
+        var n = parseInt(d && d.pageviews, 10);
         if (isNaN(n) || n <= 0) { wrap.hidden = true; return; }
         var text = n.toLocaleString('en-US');
         var zh = wrap.querySelector('#visit-count');
@@ -551,7 +552,7 @@
       })
       .catch(function() {
         clearTimeout(timer);
-        wrap.hidden = true;   // 读不到就静默隐藏，不给访客看破相
+        wrap.hidden = true;
       });
   }
 
