@@ -514,53 +514,45 @@
   /* ------------------------------------------------------------------
      累计访问次数
      ------------------------------------------------------------------
-     用「不蒜子」官方 JSONP 机制：动态插入 <script>，服务端读取 Referer
-     判定统计对象并回调数据。
+     读取仓库里的 counter.json（由 GitHub Actions 定时累加）。
 
-     为什么必须用 JSONP 而不是 fetch：
-       该服务的 API 端点返回 Content-Type: text/html 且未开放 CORS，
-       fetch 拿不到可解析的 JSON。JSONP 走 <script> 加载不受同源策略限制。
+     为什么不用第三方统计服务：
+       本项目部署环境的网络对 countapi.xyz、不蒜子（counter 子域）、
+       abacus、open-count 等服务均不通或已失效，实测全部超时。
+       raw.githubusercontent.com 则稳定可达且带 CORS 头，适合做数据源。
 
-     失败或超过 5 秒则保持隐藏，不在页脚留下「—」或报错。
+     写入由 GitHub Actions 完成（见 .github/workflows/counter.yml），
+     前端只读不写，因此无需在任何公开代码里暴露 Token。
      ------------------------------------------------------------------ */
   function initVisitCount() {
     var wrap = document.getElementById('visit-wrap');
     if (!wrap) return;
 
-    var timer = setTimeout(function() { wrap.hidden = true; }, 5000);
-    var done = false;
+    var url = 'https://raw.githubusercontent.com/gangliuphys/'
+      + 'gangliuphys.github.io/main/counter.json';
 
-    var cbName = 'BusuanziCallback_' + Date.now();
-    var script = document.createElement('script');
-    script.src = 'https://busuanzi.icodeq.com/busuanzi.pure.mini.js?jsonpCallback=' + cbName;
-    script.async = true;
-    script.referrerPolicy = 'no-referrer-when-downgrade';
+    var timer = setTimeout(function() { wrap.hidden = true; }, 6000);
 
-    window[cbName] = function(data) {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-
-      var n = parseInt(data && data.site_pv, 10);
-      if (isNaN(n)) { wrap.hidden = true; return; }
-
-      var text = n.toLocaleString('en-US');
-      var zh = wrap.querySelector('#visit-count');
-      var en = wrap.querySelector('#visit-count-en');
-      if (zh) zh.textContent = text;
-      if (en) en.textContent = text;
-      wrap.hidden = false;
-    };
-
-    script.onerror = function() {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      wrap.hidden = true;
-    };
-
-    document.head.appendChild(script);
+    fetch(url, { cache: 'no-store' })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(d) {
+        clearTimeout(timer);
+        var n = parseInt(d && d.count, 10);
+        if (isNaN(n) || n <= 0) { wrap.hidden = true; return; }
+        var text = n.toLocaleString('en-US');
+        var zh = wrap.querySelector('#visit-count');
+        var en = wrap.querySelector('#visit-count-en');
+        if (zh) zh.textContent = text;
+        if (en) en.textContent = text;
+        wrap.hidden = false;
+      })
+      .catch(function() {
+        clearTimeout(timer);
+        wrap.hidden = true;   // 读不到就静默隐藏，不给访客看破相
+      });
   }
 
   /* ------------------------------------------------------------------
