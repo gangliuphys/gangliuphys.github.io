@@ -512,6 +512,53 @@
   }
 
   /* ------------------------------------------------------------------
+     累计访问次数
+     ------------------------------------------------------------------
+     走不蒜子自建后端（busuanzi.icodeq.com），无需注册、按域名统计。
+     加载失败时保持隐藏，不影响页面观感。
+     ------------------------------------------------------------------ */
+  function initVisitCount() {
+    var wrap = document.querySelector('.footer__visit');
+    if (!wrap) return;
+
+    // 用户若开启了「减少动态效果」或极简偏好，仍照常计数（这是信息而非动效）
+    var target = location.origin + location.pathname;
+    var endpoint = 'https://busuanzi.icodeq.com/api/v1/getpv?url='
+      + encodeURIComponent(target);
+
+    var shown = false;
+
+    function show(text) {
+      if (shown) return;
+      shown = true;
+      var zh = wrap.querySelector('#visit-count');
+      var en = wrap.querySelector('#visit-count-en');
+      if (zh) zh.textContent = text;
+      if (en) en.textContent = text;
+      wrap.hidden = false;
+    }
+
+    // 超过 8 秒还没拿到数据就放弃，不让访客干等
+    var timer = setTimeout(function() { wrap.hidden = true; }, 8000);
+
+    fetch(endpoint, { mode: 'cors' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        clearTimeout(timer);
+        var n = parseInt(d && d.data, 10);
+        if (isNaN(n)) throw new Error('bad payload');
+        show(n.toLocaleString('en-US'));
+      })
+      .catch(function () {
+        clearTimeout(timer);
+        wrap.hidden = true;   // 静默失败：保持隐藏
+      });
+  }
+
+  /* ------------------------------------------------------------------
      初始化
      ------------------------------------------------------------------ */
   function boot() {
@@ -523,6 +570,7 @@
     initPubsModal();
     initRefNumbers();
     initYear();
+    initVisitCount();
   }
 
   if (document.readyState === 'loading') {
