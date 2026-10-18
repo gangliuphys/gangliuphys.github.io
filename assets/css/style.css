@@ -1165,34 +1165,31 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   padding: 0;
 }
 
-/* 每条项目占一行：标题在左，元信息（类别·代码·时间·角色）在右 */
+/* 每条项目一行：序号 | 标题 | 元信息
+   用三列 grid 而非 flex + 绝对定位，
+   这样序号能随标题自然对齐，不会因英文标题换行而下沉。 */
 .grant {
   position: relative;
-  padding-left: 2.6rem;
   counter-increment: grant;
-}
-
-.grant::before {
-  content: "[" counter(grant) "]";
-  position: absolute;
-  left: 0;
-  top: 0.2rem;
-  font-size: var(--fs-md);        /* 与项目名称同字号 */
-  font-weight: 640;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-/* 序号占位后，分隔线画在序号之后的正文区内 */
-.grant {
   margin-bottom: 0.55rem;
   padding-bottom: 0.55rem;
   border-bottom: 1px solid var(--border);
-  /* 标题与元信息并排成一行 */
-  display: flex;
+
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr) auto;
   align-items: baseline;
-  gap: 0.3rem 1rem;
-  flex-wrap: wrap;
+  column-gap: 0.4rem;
+}
+
+/* 序号：作为独立网格列，不用绝对定位，天然与首行文字基线对齐 */
+.grant::before {
+  content: "[" counter(grant) "]";
+  grid-column: 1;
+  font-size: var(--fs-md);
+  font-weight: 640;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .grant:last-child {
@@ -1204,25 +1201,37 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 /* 研究项目：整栏文字统一采用「理学博士」（.tl-degree）的字号，
    仅题目与「主持」标签加粗，颜色与字重对齐教育背景，使两栏观感一致。 */
 .grant__title {
-  font-size: var(--fs-md);          /* = .tl-degree 的字号 */
-  font-weight: 640;                 /* 与 .tl-degree 一致 */
+  grid-column: 2;
+  font-size: var(--fs-md);
+  font-weight: 640;
   line-height: 1.5;
-  color: var(--text);               /* 与 .tl-degree 同色 */
-  /* 占据剩余空间，把元信息推到最右 */
-  flex: 1 1 auto;
+  color: var(--text);
   min-width: 0;
 }
 
 .grant__meta {
+  grid-column: 3;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   gap: 0.4rem 1rem;
-  font-size: var(--fs-md);          /* 与题目同字号 */
-  color: var(--text-secondary);     /* 与 .tl-org 同色 */
-  /* 靠右排列，不再换行 */
-  flex: 0 1 auto;
-  margin-left: auto;
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  justify-content: flex-end;
+}
+
+/* 英文标题较长时，元信息自动落到下一行并右对齐；
+   序号仍留在第一行标题处，不会跟着下沉。 */
+@media (min-width: 721px) {
+  .grant {
+    grid-template-areas:
+      "num title meta"
+      ".    .    meta";
+  }
+
+  .grant::before { grid-area: num; }
+  .grant__title { grid-area: title; }
+  .grant__meta  { grid-area: meta; align-self: start; }
 }
 
 .grant__no {
