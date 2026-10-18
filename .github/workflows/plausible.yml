@@ -31,15 +31,15 @@ jobs:
 
       - name: Fetch pageviews from Plausible
         env:
-          # ↓↓↓ 换成你的 Plausible 站点 ID（就是 data-domain 的值）
+          # Plausible 站点 ID（添加站点时填的域名）
           SITE_ID: 'gangliuphys.github.io'
-          # 从仓库 Secrets 读，勿硬编码
-          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
+          # 兼容两种命名：优先 PLAUSIBLE_API_KEY，其次 homepagePLAUSIBLE_API_KEY
+          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY || secrets.homepagePLAUSIBLE_API_KEY }}
         run: |
           set -euo pipefail
 
           if [ -z "${PLAUSIBLE_API_KEY}" ]; then
-            echo "::warning::未配置 PLAUSIBLE_API_KEY secret，跳过本次同步"
+            echo "::warning::未找到 PLAUSIBLE_API_KEY 或 homepagePLAUSIBLE_API_KEY secret，跳过本次同步"
             exit 0
           fi
 
