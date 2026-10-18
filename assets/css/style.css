@@ -1165,9 +1165,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   padding: 0;
 }
 
-/* 每条项目一行：序号 | 标题 | 元信息
-   用三列 grid 而非 flex + 绝对定位，
-   这样序号能随标题自然对齐，不会因英文标题换行而下沉。 */
+/* 三列：序号 | 标题 | 元信息
+   元信息用百分比而非固定 rem —— 窄屏时不会反过来挤压标题，
+   标题始终保有足够宽度，只有真的放不下才换行。 */
 .grant {
   position: relative;
   counter-increment: grant;
@@ -1176,9 +1176,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   border-bottom: 1px solid var(--border);
 
   display: grid;
-  grid-template-columns: 2.2rem minmax(0, 1fr) auto;
+  grid-template-columns: 2.2rem minmax(0, 1fr) 46%;
   align-items: baseline;
-  column-gap: 0.4rem;
+  column-gap: 0.5rem;
 }
 
 /* 序号：作为独立网格列，不用绝对定位，天然与首行文字基线对齐 */
@@ -1220,8 +1220,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   justify-content: flex-end;
 }
 
-/* 英文标题较长时，元信息自动落到下一行并右对齐；
-   序号仍留在第一行标题处，不会跟着下沉。 */
+/* 英文标题较长时，元信息自动落到下一行；
+   序号仍留在第一行标题处，不会跟着下沉。
+   元信息区宽度固定且内容左对齐 → 三条项目的基金名等垂直对齐成列。 */
 @media (min-width: 721px) {
   .grant {
     grid-template-areas:
@@ -1231,7 +1232,17 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 
   .grant::before { grid-area: num; }
   .grant__title { grid-area: title; }
-  .grant__meta  { grid-area: meta; align-self: start; }
+
+  .grant__meta {
+    grid-area: meta;
+    align-self: start;
+    justify-content: flex-start;   /* 从左侧起排，三条起点对齐 */
+  }
+
+  /* 日期与角色推到最右，形成整齐的右边界 */
+  .grant__role {
+    margin-left: auto;
+  }
 }
 
 .grant__no {
