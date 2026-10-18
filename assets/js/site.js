@@ -75,12 +75,29 @@
       if (value != null) el.setAttribute('title', value);
     });
 
-    // 6) 搜索框占位符
+// 6) 页面标题与社交分享标题：随语言切换
+    //    浏览器标签页、搜索结果、链接预览（分享卡片）都取这里
+    const PAGE_TITLE = {
+      zh: '刘刚个人主页',
+      en: 'Gang Liu Personal Homepage',
+    };
+    const newTitle = PAGE_TITLE[lang];
+    if (newTitle) {
+      document.title = newTitle;
+      // og:title 影响微信/微博等分享卡片的标题
+      const og = document.querySelector('meta[property="og:title"]');
+      if (og) og.setAttribute('content', newTitle);
+      // Twitter / X 的卡片标题
+      const tw = document.querySelector('meta[name="twitter:title"]');
+      if (tw) tw.setAttribute('content', newTitle);
+    }
+
+    // 7) 搜索框占位符
     const input = $('#searchInput');
     if (input) {
       input.placeholder = lang === 'zh'
-        ? '搜索论文、项目、新闻…  (Search…)'
-        : 'Search papers, projects, news…  (搜索…)';
+      ? '搜索论文、项目、新闻…  (Search…)'
+      : 'Search papers, projects, news…  (搜索…)';
     }
 
     // 7) 语言按钮本身（不在 data 体系内）
