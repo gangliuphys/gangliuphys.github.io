@@ -39,8 +39,10 @@ jobs:
           set -euo pipefail
 
           if [ -z "${PLAUSIBLE_API_KEY}" ]; then
-            echo "::warning::未找到 PLAUSIBLE_API_KEY 或 homepagePLAUSIBLE_API_KEY secret，跳过本次同步"
-            exit 0
+            echo "::error::未找到 PLAUSIBLE_API_KEY secret。"
+            echo "请到 Settings → Secrets and variables → Actions 新建或更新该 secret，"
+            echo "注意 Secret 内容不能为空（可能是误粘贴了前缀 'homepage'）。"
+            exit 1
           fi
 
           mkdir -p assets
@@ -52,22 +54,21 @@ jobs:
             --data-urlencode "period=12mo" \
             --data-urlencode "metrics=pageviews")
 
-          echo "$RESP" | head -c 300
-          echo
+          echo "API 响应: ${RESP:0:300}"
 
-          # 提取 pageviews 数值；取不到就退出，避免写入 0 覆盖已有数据
           PV=$(printf '%s' "$RESP" | python3 -c "
           import json,sys
           try:
               d = json.load(sys.stdin)
               print(int(d['results']['pageviews']['value']))
-          except Exception:
+          except Exception as e:
+              print('PARSE_FAIL: %s' % e, file=sys.stderr)
               sys.exit(1)
           ")
 
           if [ -z "${PV}" ]; then
-            echo "::warning::未能解析 pageviews，跳过"
-            exit 0
+            echo "::error::未能从响应中解析 pageviews，跳过本次同步"
+            exit 1
           fi
 
           python3 -c "
