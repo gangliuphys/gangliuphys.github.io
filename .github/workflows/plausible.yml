@@ -1,0 +1,93 @@
+name: Sync visit count from Plausible
+
+# 从 Plausible 拉取真实累计访问数，写入 assets/visit-count.json 供页脚显示。
+#
+# 密钥安全设计：
+#   PLAUSIBLE_API_KEY 存在 Actions secrets 里（Settings → Secrets and variables → Actions），
+#   本文件与前端代码都不含密钥，公开仓库无法泄露。
+#
+# 需要你先做：
+#   1. 打开 https://plausible.io/ 注册（免费版每月 10k 页面浏览，够个人主页用）
+#   2. 添加站点，域名填 gangliuphys.github.io
+#   3. 复制那段 <script defer data-domain="gangliuphys.github.io" src="..."> 里的 data-domain
+#      和 src，把 data-domain 填到下面的 SITE_ID
+#   4. 在 Settings → API keys 生成一个 Key，粘到仓库的 Actions secret 里（见下方步骤）
+
+on:
+  # 每 2 小时同步一次；plausible 的实时访客接口另说，累计数 2 小时粒度足够
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch pageviews from Plausible
+        env:
+          # ↓↓↓ 换成你的 Plausible 站点 ID（就是 data-domain 的值）
+          SITE_ID: 'gangliuphys.github.io'
+          # 从仓库 Secrets 读，勿硬编码
+          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${PLAUSIBLE_API_KEY}" ]; then
+            echo "::warning::未配置 PLAUSIBLE_API_KEY secret，跳过本次同步"
+            exit 0
+          fi
+
+          mkdir -p assets
+
+          RESP=$(curl -sS -G "https://plausible.io/api/v1/stats/aggregate" \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${PLAUSIBLE_API_KEY}" \
+            --data-urlencode "site_id=${SITE_ID}" \
+            --data-urlencode "period=12mo" \
+            --data-urlencode "metrics=pageviews")
+
+          echo "$RESP" | head -c 300
+          echo
+
+          # 提取 pageviews 数值；取不到就退出，避免写入 0 覆盖已有数据
+          PV=$(printf '%s' "$RESP" | python3 -c "
+          import json,sys
+          try:
+              d = json.load(sys.stdin)
+              print(int(d['results']['pageviews']['value']))
+          except Exception:
+              sys.exit(1)
+          ")
+
+          if [ -z "${PV}" ]; then
+            echo "::warning::未能解析 pageviews，跳过"
+            exit 0
+          fi
+
+          python3 -c "
+          import json
+          json.dump({'pageviews': $PV}, open('assets/visit-count.json','w'))
+          "
+
+          echo "pageviews = $PV"
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add assets/visit-count.json
+
+          if git diff --cached --quiet; then
+            echo "no change"
+            exit 0
+          fi
+
+          git commit -m 'chore: sync visit count'
+          git push
