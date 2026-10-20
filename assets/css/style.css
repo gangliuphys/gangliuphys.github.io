@@ -1354,6 +1354,37 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 /* --------------------------------------------------------------------------
    11. 相册
    -------------------------------------------------------------------------- */
+/* 相册主题分组：每个 .album 是一个主题（会议、出访、团建…） */
+.album + .album {
+  margin-top: var(--sp-5);
+}
+
+.album__title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.7rem;
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-md);
+  font-weight: 640;
+  color: var(--text);
+}
+
+.album__title::after {
+  content: "";
+  flex: 1 1 auto;
+  min-width: var(--sp-5);
+  height: 1px;
+  margin-bottom: 0.2em;
+  background: var(--border);
+}
+
+.album__date {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
