@@ -5,22 +5,20 @@ name: Sync visit count from Plausible
 # 密钥安全设计：
 #   PLAUSIBLE_API_KEY 存在 Actions secrets 里（Settings → Secrets and variables → Actions），
 #   本文件与前端代码都不含密钥，公开仓库无法泄露。
-#
-# 需要你先做：
-#   1. 打开 https://plausible.io/ 注册（免费版每月 10k 页面浏览，够个人主页用）
-#   2. 添加站点，域名填 gangliuphys.github.io
-#   3. 复制那段 <script defer data-domain="gangliuphys.github.io" src="..."> 里的 data-domain
-#      和 src，把 data-domain 填到下面的 SITE_ID
-#   4. 在 Settings → API keys 生成一个 Key，粘到仓库的 Actions secret 里（见下方步骤）
 
 on:
-  # 每 2 小时同步一次；plausible 的实时访客接口另说，累计数 2 小时粒度足够
   schedule:
-    - cron: '0 */2 * * *'
+    # UTC 0,6,12,18 = 北京时间 8、14、20、次日 2 点
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# 避免多次触发并发推送导致冲突
+concurrency:
+  group: visit-counter
+  cancel-in-progress: false
 
 jobs:
   sync:
@@ -28,20 +26,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # 必须拉完整历史。depth=1 时 Actions 看不到远程新提交，push 会被拒绝
+          fetch-depth: 0
 
       - name: Fetch pageviews from Plausible
         env:
-          # Plausible 站点 ID（添加站点时填的域名）
           SITE_ID: 'gangliuphys.github.io'
-          # 兼容两种命名：优先 PLAUSIBLE_API_KEY，其次 homepagePLAUSIBLE_API_KEY
-          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY || secrets.homepagePLAUSIBLE_API_KEY }}
+          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
         run: |
           set -euo pipefail
 
           if [ -z "${PLAUSIBLE_API_KEY}" ]; then
             echo "::error::未找到 PLAUSIBLE_API_KEY secret。"
-            echo "请到 Settings → Secrets and variables → Actions 新建或更新该 secret，"
-            echo "注意 Secret 内容不能为空（可能是误粘贴了前缀 'homepage'）。"
             exit 1
           fi
 
@@ -52,51 +49,68 @@ jobs:
             -H "Authorization: Bearer ${PLAUSIBLE_API_KEY}" \
             --data-urlencode "site_id=${SITE_ID}" \
             --data-urlencode "period=12mo" \
-            --data-urlencode "metrics=pageviews")
+            --data-urlencode "metrics=pageviews,visitors")
 
           echo "API 响应: ${RESP:0:300}"
 
           PV=$(printf '%s' "$RESP" | python3 -c "
           import json,sys
           try:
-              d = json.load(sys.stdin)
-              print(int(d['results']['pageviews']['value']))
+              print(int(json.load(sys.stdin)['results']['pageviews']['value']))
           except Exception as e:
               print('PARSE_FAIL: %s' % e, file=sys.stderr)
               sys.exit(1)
           ")
 
+          UV=$(printf '%s' "$RESP" | python3 -c "
+          import json,sys
+          try:
+              print(int(json.load(sys.stdin)['results']['visitors']['value']))
+          except Exception:
+              print(0)
+          ")
+
           if [ -z "${PV}" ]; then
-            echo "::error::未能从响应中解析 pageviews，跳过本次同步"
+            echo "::error::未能解析 pageviews，跳过"
             exit 1
           fi
 
-          # 数字为 0 说明站点还没有真实访问数据。
-          # 此时不写文件（否则页脚会显示「累计访问 0 次」），
-          # 保留已有数据或让前端保持隐藏。
+          # 数字为 0 说明还没有真实访客数据。此时不写文件，
+          # 避免页脚显示「累计访问 0 次」，也避免 git add 找不到文件报错。
           if [ "${PV}" -eq 0 ]; then
-            echo "Plausible 目前记录为 0 次访问（尚无真实访客数据），跳过写入"
+            echo "Plausible 记录为 0 次访问（尚无真实访客），跳过写入"
             exit 0
           fi
 
           python3 -c "
           import json
-          json.dump({'pageviews': $PV}, open('assets/visit-count.json','w'))
+          json.dump({'pageviews': $PV, 'visitors': $UV}, open('assets/visit-count.json','w'))
           "
 
-          echo "pageviews = $PV"
+          echo "pageviews = $PV, visitors = $UV"
 
       - name: Commit and push
         run: |
           set -euo pipefail
           git config user.name  'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          # 上一步已确保文件生成；这里仍做存在性检查，
+          # 避免 git add 遇到不存在的路径时返回 exit 128
+          if [ ! -f assets/visit-count.json ]; then
+            echo "assets/visit-count.json 不存在，跳过提交"
+            exit 0
+          fi
+
           git add assets/visit-count.json
 
           if git diff --cached --quiet; then
-            echo "no change"
+            echo "数字未变化，无需提交"
             exit 0
           fi
 
           git commit -m 'chore: sync visit count'
-          git push
+
+          # 远程可能已有新提交（Pages 自动提交等），先 rebase 再推
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
