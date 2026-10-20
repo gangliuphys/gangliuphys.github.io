@@ -791,83 +791,111 @@ plausible.init()
       </div>
 
       <!--
+        相册按主题分组：每个 <section class="album"> 是一个主题
+          · <h3 class="album__title"> 主题标题（中英双语）
+          · <div class="gallery"> 放该主题的照片
         添加照片：复制一个 <figure class="shot"> 块，图片放 assets/img/gallery/ 目录。
-        建议 3:2 横向比例、宽度 1400px 左右。
-        排列顺序：按时间倒序，最新的照片放最前面。
+        建议 3:2 横向比例、宽度 1400px 左右，手机端另存 -sm.jpg（700px 宽）。
+        主题顺序：按时间倒序，最新的主题放最前面。
       -->
-      <div class="gallery">
-        <figure class="shot">
-          <picture>
-            <source media="(max-width: 720px)" srcset="assets/img/gallery/7-sm.jpg">
-            <img src="assets/img/gallery/7.jpg"
-                 alt="和熊伟教授合影" width="1400" height="933" loading="lazy">
-          </picture>
-          <figcaption>
-            <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和熊伟教授合影</span>
-            <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with Prof. Xiong Wei</span>
-          </figcaption>
-        </figure>
+      <section class="album">
+        <h3 class="album__title">
+          <span class="album__date">2026.08</span>
+          <span data-zh="第二十二届量子光学学术会议（南京）"
+                data-en="22nd Conference on Quantum Optics (Nanjing)">第二十二届量子光学学术会议（南京）</span>
+        </h3>
+        <div class="gallery">
+          <figure class="shot">
+            <picture>
+              <source media="(max-width: 720px)" srcset="assets/img/gallery/7-sm.jpg">
+              <img src="assets/img/gallery/7.jpg"
+                   alt="和熊伟教授合影" width="1400" height="933" loading="lazy">
+            </picture>
+            <figcaption>
+              <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和熊伟教授合影</span>
+              <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with Prof. Xiong Wei</span>
+            </figcaption>
+          </figure>
 
-        <figure class="shot">
-          <picture>
-            <source media="(max-width: 720px)" srcset="assets/img/gallery/6-sm.jpg">
-            <img src="assets/img/gallery/6.jpg"
-                 alt="和熊伟课题组成员合影" width="1400" height="933" loading="lazy">
-          </picture>
-          <figcaption>
-            <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和熊伟课题组成员合影</span>
-            <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with members of Prof. Wei's group</span>
-          </figcaption>
-        </figure>
+          <figure class="shot">
+            <picture>
+              <source media="(max-width: 720px)" srcset="assets/img/gallery/6-sm.jpg">
+              <img src="assets/img/gallery/6.jpg"
+                   alt="和熊伟课题组成员合影" width="1400" height="933" loading="lazy">
+            </picture>
+            <figcaption>
+              <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和熊伟课题组成员合影</span>
+              <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with members of Prof. Wei's group</span>
+            </figcaption>
+          </figure>
 
-        <figure class="shot">
-          <picture>
-            <source media="(max-width: 720px)" srcset="assets/img/gallery/5-sm.jpg">
-            <img src="assets/img/gallery/5.jpg"
-                 alt="和王明锋教授合影" width="1400" height="933" loading="lazy">
-          </picture>
-          <figcaption>
-            <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和王明锋教授合影</span>
-            <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with Prof. Mingfeng Wang</span>
-          </figcaption>
-        </figure>
+          <figure class="shot">
+            <picture>
+              <source media="(max-width: 720px)" srcset="assets/img/gallery/5-sm.jpg">
+              <img src="assets/img/gallery/5.jpg"
+                   alt="和王明锋教授合影" width="1400" height="933" loading="lazy">
+            </picture>
+            <figcaption>
+              <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和王明锋教授合影</span>
+              <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with Prof. Mingfeng Wang</span>
+            </figcaption>
+          </figure>
 
-        <figure class="shot">
-          <picture>
-            <source media="(max-width: 720px)" srcset="assets/img/gallery/4-sm.jpg">
-            <img src="assets/img/gallery/4.jpg"
-                 alt="和王明锋课题组成员合影" width="1400" height="933" loading="lazy">
-          </picture>
-          <figcaption>
-            <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和王明锋课题组成员合影</span>
-            <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with members of Prof. Wang's group</span>
-          </figcaption>
-        </figure>
+          <figure class="shot">
+            <picture>
+              <source media="(max-width: 720px)" srcset="assets/img/gallery/4-sm.jpg">
+              <img src="assets/img/gallery/4.jpg"
+                   alt="和王明锋课题组成员合影" width="1400" height="933" loading="lazy">
+            </picture>
+            <figcaption>
+              <span class="lang-only" lang="zh"><span class="shot__date">2026.08</span> 和王明锋课题组成员合影</span>
+              <span class="lang-only" lang="en"><span class="shot__date">2026.08</span> with members of Prof. Wang's group</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
 
-        <figure class="shot">
-          <picture>
-            <source media="(max-width: 720px)" srcset="assets/img/gallery/3-sm.jpg">
-            <img src="assets/img/gallery/3.jpg"
-                 alt="兰州大学学术报告" width="1400" height="933" loading="lazy">
-          </picture>
-          <figcaption>
-            <span class="lang-only" lang="zh"><span class="shot__date">2026.07</span> 兰州大学学术报告</span>
-            <span class="lang-only" lang="en"><span class="shot__date">2026.07</span> Academic talk at Lanzhou University</span>
-          </figcaption>
-        </figure>
+      <section class="album">
+        <h3 class="album__title">
+          <span class="album__date">2026.07</span>
+          <span data-zh="兰州大学学术报告"
+                data-en="Academic talk at Lanzhou University">兰州大学学术报告</span>
+        </h3>
+        <div class="gallery">
+          <figure class="shot">
+            <picture>
+              <source media="(max-width: 720px)" srcset="assets/img/gallery/3-sm.jpg">
+              <img src="assets/img/gallery/3.jpg"
+                   alt="兰州大学学术报告" width="1400" height="933" loading="lazy">
+            </picture>
+            <figcaption>
+              <span class="lang-only" lang="zh"><span class="shot__date">2026.07</span> 兰州大学学术报告</span>
+              <span class="lang-only" lang="en"><span class="shot__date">2026.07</span> Academic talk at Lanzhou University</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
 
-        <figure class="shot">
-          <picture>
-            <source media="(max-width: 720px)" srcset="assets/img/gallery/1-sm.jpg">
-            <img src="assets/img/gallery/1.jpg"
-                 alt="李杰课题组上半年团建" width="1400" height="933" loading="lazy">
-          </picture>
-          <figcaption>
-            <span class="lang-only" lang="zh"><span class="shot__date">2026.06</span> 李杰课题组上半年团建</span>
-            <span class="lang-only" lang="en"><span class="shot__date">2026.06</span> Group outing of the Jie Li group</span>
-          </figcaption>
-        </figure>
-      </div>
+      <section class="album">
+        <h3 class="album__title">
+          <span class="album__date">2026.06</span>
+          <span data-zh="李杰课题组上半年团建"
+                data-en="Group outing of the Jie Li group">李杰课题组上半年团建</span>
+        </h3>
+        <div class="gallery">
+          <figure class="shot">
+            <picture>
+              <source media="(max-width: 720px)" srcset="assets/img/gallery/1-sm.jpg">
+              <img src="assets/img/gallery/1.jpg"
+                   alt="李杰课题组上半年团建" width="1400" height="933" loading="lazy">
+            </picture>
+            <figcaption>
+              <span class="lang-only" lang="zh"><span class="shot__date">2026.06</span> 李杰课题组上半年团建</span>
+              <span class="lang-only" lang="en"><span class="shot__date">2026.06</span> Group outing of the Jie Li group</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
     </div>
   </section>
 
