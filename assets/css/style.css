@@ -1341,6 +1341,12 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   color: var(--brand-600);
 }
 
+/* 报告题目：科技绿加粗的同时保持斜体。
+   用复合选择器提高特异性，不依赖 .news__strong 的声明顺序。 */
+.news__strong.news__strong--italic {
+  font-style: italic;
+}
+
 /* 深色背景下加深绿色，避免对比度不足 */
 [data-theme="dark"] .news__strong {
   color: var(--brand-300);
