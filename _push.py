@@ -17,6 +17,7 @@ import json
 import pathlib
 import subprocess
 import sys
+import time
 import urllib.parse
 import urllib.request
 import urllib.error
@@ -27,6 +28,7 @@ BRANCH = "main"
 API = f"https://api.github.com/repos/{OWNER}/{REPO}/contents"
 
 DEFAULT_FILES = ["index.html", "assets/css/style.css", "assets/js/site.js"]
+RETRY = 4
 
 
 def get_token() -> str:
@@ -51,26 +53,35 @@ def enc(path: str) -> str:
 
 
 def call(method: str, url: str, token: str, payload=None):
-    """调用 GitHub API"""
-    req = urllib.request.Request(url, method=method)
-    for k, v in [
-        ("Authorization", f"Bearer {token}"),
-        ("Accept", "application/vnd.github+json"),
-        ("X-GitHub-Api-Version", "2022-11-28"),
-        ("User-Agent", "uploader"),
-    ]:
-        req.add_header(k, v)
+    """调用 GitHub API（网络异常自动重试，容忍网络抖动）"""
+    last = None
+    for attempt in range(1, RETRY + 1):
+        try:
+            req = urllib.request.Request(url, method=method)
+            for k, v in [
+                ("Authorization", f"Bearer {token}"),
+                ("Accept", "application/vnd.github+json"),
+                ("X-GitHub-Api-Version", "2022-11-28"),
+                ("User-Agent", "uploader"),
+            ]:
+                req.add_header(k, v)
 
-    data = json.dumps(payload).encode() if payload is not None else None
-    if data:
-        req.add_header("Content-Type", "application/json")
+            data = json.dumps(payload).encode() if payload is not None else None
+            if data:
+                req.add_header("Content-Type", "application/json")
 
-    try:
-        with urllib.request.urlopen(req, data, timeout=90) as r:
-            body = r.read().decode()
-            return r.status, (json.loads(body) if body else {})
-    except urllib.error.HTTPError as e:
-        return e.code, {}
+            with urllib.request.urlopen(req, data, timeout=120) as r:
+                body = r.read().decode()
+                return r.status, (json.loads(body) if body else {})
+        except urllib.error.HTTPError as e:
+            return e.code, {}
+        except Exception as e:
+            last = e
+            if attempt < RETRY:
+                wait = attempt * 2
+                print(f"    重试 {attempt}/{RETRY - 1}（{type(e).__name__}），{wait}s 后继续")
+                time.sleep(wait)
+    return 0, {"error": str(last)}
 
 
 def main():
