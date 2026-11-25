@@ -1222,6 +1222,15 @@ html[data-lang="en"] .lang-only[lang="zh"] {
      · 时间列 11.25rem(180px)：「2026.11 – 2028.12」实测 151.1px，
        多出的 28.9px 即时间与角色标签之间的间距
    meta 整体加宽约 38px（= 2 个汉字），「基金类别」随之左移同样距离。 */
+
+/* 英文角色标签宽度不一（PI=36.3px，Co-PI=67.0px），
+   而 meta 是 auto 宽度、逐条独立计算，导致 [3][4] 的 meta 更宽、
+   左边界左移 30.7px，「基金类别」列与 [1][2] 错开。
+   这里只固定英文的角色列宽，使四条 meta 等宽、四列严格对齐。
+   中文角色标签（主持/参与）等宽，保持 auto 即可，中文版式不受影响。 */
+html[data-lang="en"] .grant__meta {
+  grid-template-columns: 18rem 7.25rem 11.25rem 4.2rem;
+}
 .grant__meta {
   grid-area: meta;
   display: grid;
