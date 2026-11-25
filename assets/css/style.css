@@ -1166,8 +1166,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 }
 
 /* 默认（堆叠布局）：序号 + 题目一行，元信息整行铺在下方。
-   元信息有 4 个固定宽度列（合计约 39rem），窄屏并排会把角色标签压扁，
-   因此并排布局只在足够宽时才启用（见下方 min-width: 1320px）。 */
+   窄屏时并排会把标题挤成竖排单词，故此为兜底布局。 */
 .grant {
   position: relative;
   counter-increment: grant;
@@ -1219,7 +1218,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 .grant__meta {
   grid-area: meta;
   display: grid;
-  grid-template-columns: 19rem 7.4rem 10rem minmax(0, 1fr);
+  grid-template-columns: 18rem 7.4rem 8.6rem auto;
   align-items: baseline;
   column-gap: 0.8rem;
   font-size: var(--fs-md);
@@ -1231,15 +1230,14 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   white-space: nowrap;
 }
 
-/* 宽屏并排布局：序号 | 标题 | 元信息
-   元信息列固定占 56%，标题列因此更短，为英文基金名腾出空间。
-   1320px 是一致性断点：再窄则元信息的固定列装不下，会挤压角色标签。 */
-@media (min-width: 1320px) {
+/* 并排布局：序号 | 标题 | 元信息（同一行）
+   元信息列用 auto —— 按内容定宽而非视口百分比，
+   这样在中等宽度下它不会随视口缩水、挤压后面的固定列，
+   剩余空间全部留给标题列（标题过长时自然换行，不影响元信息成列）。 */
+@media (min-width: 960px) {
   .grant {
-    grid-template-columns: 2.2rem minmax(0, 1fr) 56%;
-    grid-template-areas:
-      "num title meta"
-      ".    .    meta";
+    grid-template-columns: 2.2rem minmax(0, 1fr) auto;
+    grid-template-areas: "num title meta";
     row-gap: 0;
   }
 
@@ -1623,15 +1621,21 @@ mark {
   .tl-item {
     grid-template-columns: 110px 1fr;
   }
+}
 
-  /* 研究项目：手机端进一步压缩元信息，基金类别独占一行 */
+/* 研究项目：窄屏（<1000px）元信息两行排布。
+   此处改用 flex 而非 grid —— grid 的 auto 轨道遇到跨列 item 时，
+   宽度分摊规则不可靠，会把「基金类别」压成几像素；
+   flex 的 flex-basis:100% 能可靠地让它独占一行。 */
+@media (max-width: 959px) {
   .grant__meta {
-    grid-template-columns: auto auto auto;
-    justify-content: start;
-    column-gap: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.9rem;
   }
 
-  .grant__fund { grid-column: 1 / -1; }
+  .grant__fund { flex: 1 0 100%; }
 }
 
 /* 中等屏幕（≤1040px）：导航项较多，启用汉堡菜单避免顶栏溢出 */
