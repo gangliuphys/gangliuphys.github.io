@@ -1176,7 +1176,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   border-bottom: 1px solid var(--border);
 
   display: grid;
-  grid-template-columns: 2.2rem minmax(0, 1fr) 50%;
+  grid-template-columns: 2.2rem minmax(0, 1fr) 56%;
   align-items: baseline;
   column-gap: 0.5rem;
 }
@@ -1215,7 +1215,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
 .grant__meta {
   grid-column: 3;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 7.4rem 10rem auto;
+  grid-template-columns: 19rem 7.4rem 10rem minmax(0, 1fr);
   align-items: baseline;
   column-gap: 0.8rem;
   font-size: var(--fs-md);
@@ -1244,6 +1244,11 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   .grant__meta {
     grid-area: meta;
     align-self: start;
+  }
+
+  /* 角色标签推到最右，形成整齐的右边界 */
+  .grant__role {
+    justify-self: end;
   }
 }
 
