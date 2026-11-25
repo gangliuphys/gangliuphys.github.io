@@ -1210,15 +1210,22 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   line-height: 1.5;
   color: var(--text);
   min-width: 0;
+  /* 右侧留出 2rem 呼吸区：英文长标题在此处提前换行，
+     不再越过后续的基金类别列。 */
+  padding-right: 2rem;
 }
 
 /* 元信息四列：基金类别 | 项目编号 | 执行时间段 | 角色
    编号与时间段用固定列宽，各条目之间严格对齐成列。
-   1fr 吸收剩余空间，把角色推到最右。 */
+   列宽按实际文字宽度定（用 Range 测纯文本宽度）：
+     · 编号列 7.25rem(116px)：容纳最长的「LR25A050001」(114.5px)
+     · 时间列 11.25rem(180px)：「2026.11 – 2028.12」实测 151.1px，
+       多出的 28.9px 即时间与角色标签之间的间距
+   meta 整体加宽约 38px（= 2 个汉字），「基金类别」随之左移同样距离。 */
 .grant__meta {
   grid-area: meta;
   display: grid;
-  grid-template-columns: 18rem 7.4rem 8.6rem auto;
+  grid-template-columns: 18rem 7.25rem 11.25rem auto;
   align-items: baseline;
   column-gap: 0.8rem;
   font-size: var(--fs-md);
