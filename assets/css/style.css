@@ -1176,7 +1176,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   border-bottom: 1px solid var(--border);
 
   display: grid;
-  grid-template-columns: 2.2rem minmax(0, 1fr) 46%;
+  grid-template-columns: 2.2rem minmax(0, 1fr) 50%;
   align-items: baseline;
   column-gap: 0.5rem;
 }
@@ -1209,21 +1209,29 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   min-width: 0;
 }
 
+/* 元信息四列：基金类别 | 项目编号 | 执行时间段 | 角色
+   编号与时间段用固定列宽，各条目之间严格对齐成列。
+   1fr 吸收剩余空间，把角色推到最右。 */
 .grant__meta {
   grid-column: 3;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.4rem 10rem auto;
   align-items: baseline;
-  gap: 0.4rem 1rem;
+  column-gap: 0.8rem;
   font-size: var(--fs-md);
   color: var(--text-secondary);
-  justify-content: flex-end;
+}
+
+.grant__no,
+.grant__time {
+  white-space: nowrap;
 }
 
 /* 英文标题较长时，元信息自动落到下一行；
    序号仍留在第一行标题处，不会跟着下沉。
-   元信息区宽度固定且内容左对齐 → 三条项目的基金名等垂直对齐成列。 */
-@media (min-width: 721px) {
+   元信息区宽度固定且内容左对齐 → 各条目的基金名、编号、时间严格对齐成列。
+   断点用 901px，与下方 max-width:900px 的窄屏布局互不重叠。 */
+@media (min-width: 901px) {
   .grant {
     grid-template-areas:
       "num title meta"
@@ -1236,12 +1244,6 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   .grant__meta {
     grid-area: meta;
     align-self: start;
-    justify-content: flex-start;   /* 从左侧起排，三条起点对齐 */
-  }
-
-  /* 日期与角色推到最右，形成整齐的右边界 */
-  .grant__role {
-    margin-left: auto;
   }
 }
 
@@ -1615,6 +1617,28 @@ mark {
   .tl-item {
     grid-template-columns: 110px 1fr;
   }
+
+  /* 研究项目：窄屏改为「序号+题目」一行，元信息整行铺在下方，
+     避免四列固定宽度把内容挤出屏幕（此前元信息会被裁掉）。 */
+  .grant {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    grid-template-areas:
+      "num title"
+      ".   meta";
+    row-gap: 0.35rem;
+  }
+
+  .grant::before { grid-area: num; }
+  .grant__title { grid-area: title; }
+
+  .grant__meta {
+    grid-area: meta;
+    grid-template-columns: auto auto auto;
+    justify-content: start;
+    column-gap: 0.9rem;
+  }
+
+  .grant__fund { grid-column: 1 / -1; }
 }
 
 /* 中等屏幕（≤1040px）：导航项较多，启用汉堡菜单避免顶栏溢出 */
