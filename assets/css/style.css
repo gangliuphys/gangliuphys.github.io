@@ -1229,7 +1229,13 @@ html[data-lang="en"] .lang-only[lang="zh"] {
    这里只固定英文的角色列宽，使四条 meta 等宽、四列严格对齐。
    中文角色标签（主持/参与）等宽，保持 auto 即可，中文版式不受影响。 */
 html[data-lang="en"] .grant__meta {
-  grid-template-columns: 18rem 7.25rem 11.25rem 4.2rem;
+  grid-template-columns: 18rem 7.25rem 9.5rem 6rem;
+}
+
+/* 英文：执行时间段右端对齐到列的右边界（四行落在同一条竖线上）；
+   角色列相应加宽，保证 meta 总宽不变、第三列起点不位移。 */
+html[data-lang="en"] .grant__time {
+  justify-self: end;
 }
 .grant__meta {
   grid-area: meta;
