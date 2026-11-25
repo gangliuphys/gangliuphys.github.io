@@ -1165,9 +1165,9 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   padding: 0;
 }
 
-/* 三列：序号 | 标题 | 元信息
-   元信息用百分比而非固定 rem —— 窄屏时不会反过来挤压标题，
-   标题始终保有足够宽度，只有真的放不下才换行。 */
+/* 默认（堆叠布局）：序号 + 题目一行，元信息整行铺在下方。
+   元信息有 4 个固定宽度列（合计约 39rem），窄屏并排会把角色标签压扁，
+   因此并排布局只在足够宽时才启用（见下方 min-width: 1320px）。 */
 .grant {
   position: relative;
   counter-increment: grant;
@@ -1176,15 +1176,19 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   border-bottom: 1px solid var(--border);
 
   display: grid;
-  grid-template-columns: 2.2rem minmax(0, 1fr) 56%;
+  grid-template-columns: 2.2rem minmax(0, 1fr);
+  grid-template-areas:
+    "num title"
+    ".   meta";
   align-items: baseline;
   column-gap: 0.5rem;
+  row-gap: 0.35rem;
 }
 
 /* 序号：作为独立网格列，不用绝对定位，天然与首行文字基线对齐 */
 .grant::before {
   content: "[" counter(grant) "]";
-  grid-column: 1;
+  grid-area: num;
   font-size: var(--fs-md);
   font-weight: 640;
   color: var(--text-muted);
@@ -1198,12 +1202,12 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   border-bottom: none;
 }
 
-/* 研究项目：整栏文字统一采用「理学博士」（.tl-degree）的字号，
-   仅题目与「主持」标签加粗，颜色与字重对齐教育背景，使两栏观感一致。 */
+/* 研究项目：整栏文字统一采用「理学博士」（.tl-degree）的字号与字重，
+   与教育背景两栏观感一致；题目不加粗，避免与基金信息抢视觉重心。 */
 .grant__title {
-  grid-column: 2;
+  grid-area: title;
   font-size: var(--fs-md);
-  font-weight: 640;
+  font-weight: 400;
   line-height: 1.5;
   color: var(--text);
   min-width: 0;
@@ -1213,7 +1217,7 @@ html[data-lang="en"] .lang-only[lang="zh"] {
    编号与时间段用固定列宽，各条目之间严格对齐成列。
    1fr 吸收剩余空间，把角色推到最右。 */
 .grant__meta {
-  grid-column: 3;
+  grid-area: meta;
   display: grid;
   grid-template-columns: 19rem 7.4rem 10rem minmax(0, 1fr);
   align-items: baseline;
@@ -1227,28 +1231,27 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   white-space: nowrap;
 }
 
-/* 英文标题较长时，元信息自动落到下一行；
-   序号仍留在第一行标题处，不会跟着下沉。
-   元信息区宽度固定且内容左对齐 → 各条目的基金名、编号、时间严格对齐成列。
-   断点用 901px，与下方 max-width:900px 的窄屏布局互不重叠。 */
-@media (min-width: 901px) {
+/* 角色标签推到最右，形成整齐的右边界；
+   nowrap 防止 "Co-PI" 在连字符处被折成两行。 */
+.grant__role {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/* 宽屏并排布局：序号 | 标题 | 元信息
+   元信息列固定占 56%，标题列因此更短，为英文基金名腾出空间。
+   1320px 是一致性断点：再窄则元信息的固定列装不下，会挤压角色标签。 */
+@media (min-width: 1320px) {
   .grant {
+    grid-template-columns: 2.2rem minmax(0, 1fr) 56%;
     grid-template-areas:
       "num title meta"
       ".    .    meta";
+    row-gap: 0;
   }
-
-  .grant::before { grid-area: num; }
-  .grant__title { grid-area: title; }
 
   .grant__meta {
-    grid-area: meta;
     align-self: start;
-  }
-
-  /* 角色标签推到最右，形成整齐的右边界 */
-  .grant__role {
-    justify-self: end;
   }
 }
 
@@ -1623,21 +1626,8 @@ mark {
     grid-template-columns: 110px 1fr;
   }
 
-  /* 研究项目：窄屏改为「序号+题目」一行，元信息整行铺在下方，
-     避免四列固定宽度把内容挤出屏幕（此前元信息会被裁掉）。 */
-  .grant {
-    grid-template-columns: 2.2rem minmax(0, 1fr);
-    grid-template-areas:
-      "num title"
-      ".   meta";
-    row-gap: 0.35rem;
-  }
-
-  .grant::before { grid-area: num; }
-  .grant__title { grid-area: title; }
-
+  /* 研究项目：手机端进一步压缩元信息，基金类别独占一行 */
   .grant__meta {
-    grid-area: meta;
     grid-template-columns: auto auto auto;
     justify-content: start;
     column-gap: 0.9rem;
