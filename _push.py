@@ -136,8 +136,71 @@ def main():
 
     print(f"\n成功 {ok}，失败 {fail}")
     if ok:
-        print("等待 1–3 分钟后强制刷新（Ctrl+F5）查看网站")
+        verify_deploy(token)
     sys.exit(0 if fail == 0 else 1)
+
+
+def verify_deploy(token: str, timeout: int = 300) -> None:
+    """等待 GitHub Pages 构建完成，并核对线上实际服务的版本。
+
+    推送成功 ≠ 线上生效：GitHub Pages 需要单独构建，
+    连续推送还会互相取消构建（状态 cancelled）。
+    这里轮询到 status == built，再抓线上页面核对 CSS 版本号。
+    """
+    import re
+
+    site = f"https://{OWNER}.github.io/"
+    api = f"https://api.github.com/repos/{OWNER}/{REPO}/pages/builds/latest"
+
+    # 本地 index.html 里声明的资源版本号
+    want = ""
+    idx = pathlib.Path("index.html")
+    if idx.exists():
+        m = re.search(r'style\.css\?v=([\w.-]+)', idx.read_text(encoding="utf-8"))
+        if m:
+            want = m.group(1)
+
+    print("\n等待 GitHub Pages 部署…")
+    deadline = time.time() + timeout
+    built = False
+    while time.time() < deadline:
+        st, body = call("GET", api, token)
+        status = body.get("status", "")
+        commit = (body.get("commit") or "")[:8]
+        if status == "built":
+            built = True
+            print(f"  ✓ 构建完成 (commit {commit})")
+            break
+        if status == "errored":
+            print(f"  ✗ 构建失败：{body.get('error', {}).get('message', '未知错误')}")
+            print("    可到仓库 Actions 页面查看日志")
+            return
+        print(f"    · {status or 'unknown'} ({commit})")
+        time.sleep(15)
+
+    if not built:
+        print(f"  ! 等待超时（{timeout}s），请稍后手动确认线上是否更新")
+        return
+
+    # 核对线上是否真的服务了新版资源
+    try:
+        req = urllib.request.Request(site, headers={"Cache-Control": "no-cache"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            html = r.read().decode("utf-8", "ignore")
+    except Exception as e:
+        print(f"  ! 线上页面抓取失败：{e}")
+        return
+
+    m = re.search(r'style\.css\?v=([\w.-]+)', html)
+    live = m.group(1) if m else "(无版本号)"
+
+    if want and live == want:
+        print(f"  ✓ 线上已生效：style.css?v={live}")
+        print("  刷新页面即可看到新版本")
+    elif want:
+        print(f"  ! 线上版本为 {live}，本地为 {want} —— 可能是 CDN 边缘节点延迟，稍后再试")
+    else:
+        print(f"  · 线上资源版本：{live}")
 
 
 if __name__ == "__main__":
