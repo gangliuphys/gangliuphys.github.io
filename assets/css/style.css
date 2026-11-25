@@ -1231,13 +1231,6 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   white-space: nowrap;
 }
 
-/* 角色标签推到最右，形成整齐的右边界；
-   nowrap 防止 "Co-PI" 在连字符处被折成两行。 */
-.grant__role {
-  justify-self: end;
-  white-space: nowrap;
-}
-
 /* 宽屏并排布局：序号 | 标题 | 元信息
    元信息列固定占 56%，标题列因此更短，为英文基金名腾出空间。
    1320px 是一致性断点：再窄则元信息的固定列装不下，会挤压角色标签。 */
@@ -1271,6 +1264,11 @@ html[data-lang="en"] .lang-only[lang="zh"] {
   background: var(--tag-bg);
   border: 1px solid var(--tag-border);
   color: var(--tag-text);
+
+  /* 推到最右，形成整齐的右边界；
+     nowrap 防止 "Co-PI" 在连字符处被折成两行。 */
+  justify-self: end;
+  white-space: nowrap;
 }
 
 .grant__role--pi {
